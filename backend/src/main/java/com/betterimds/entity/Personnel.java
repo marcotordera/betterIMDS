@@ -25,6 +25,9 @@ public class Personnel {
     @Column(name = "rank", nullable = false, length = 10)
     private String rank;
 
+    @Column(name = "email", length = 100)
+    private String email;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "org_id")
     private UnitOrg unitOrg;
@@ -38,11 +41,12 @@ public class Personnel {
     public Personnel() {
     }
 
-    public Personnel(String edipi, String firstName, String lastName, String rank, UnitOrg unitOrg) {
+    public Personnel(String edipi, String firstName, String lastName, String rank, String email, UnitOrg unitOrg) {
         this.edipi = edipi;
         this.firstName = firstName;
         this.lastName = lastName;
         this.rank = rank;
+        this.email = email;
         this.unitOrg = unitOrg;
         this.isActive = true;
     }
@@ -85,6 +89,14 @@ public class Personnel {
 
     public void setRank(String rank) {
         this.rank = rank;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public UnitOrg getUnitOrg() {

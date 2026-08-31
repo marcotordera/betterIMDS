@@ -15,12 +15,19 @@ public interface PersonnelRepository extends JpaRepository<Personnel, Integer> {
 
     boolean existsByEdipi(String edipi);
 
+    // Email lookup
+    Optional<Personnel> findByEmail(String email);
+
     // Active roster queries
     List<Personnel> findByIsActiveTrue();
 
     List<Personnel> findByUnitOrgOrgId(Integer orgId);
 
     List<Personnel> findByUnitOrgOrgIdAndIsActiveTrue(Integer orgId);
+
+    // Search by squadron/unit
+    List<Personnel> findByUnitOrgSquadron(String squadron);
+    List<Personnel> findByUnitOrgSquadronIgnoreCase(String squadron);
 
     // Search by name
     List<Personnel> findByLastNameContainingIgnoreCaseOrFirstNameContainingIgnoreCase(String lastName, String firstName);

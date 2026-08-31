@@ -39,7 +39,8 @@ CREATE TABLE public.personnel (
     edipi VARCHAR(10) UNIQUE NOT NULL,   
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
-    rank VARCHAR(10) NOT NULL,           
+    rank VARCHAR(10) NOT NULL,
+    email VARCHAR(100),
     org_id INT REFERENCES public.unit_org(org_id) ON DELETE SET NULL,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
