@@ -1,0 +1,3 @@
+@echo off
+echo Starting BetterIMDS Spring Boot Backend...
+mvnw.cmd spring-boot:run

@@ -1,0 +1,27 @@
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
+
+# Node / Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.env.local
+frontend/.env.*.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/pnpm-debug.log*
+
+# Java / Maven / Gradle / Backend
+backend/target/
+backend/build/
+backend/.gradle/
+backend/out/
+backend/*.jar
+backend/*.war
+
+# Sensitive config (if applicable)
+# backend/src/main/resources/application-secret.properties

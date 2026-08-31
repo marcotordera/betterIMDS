@@ -1,0 +1,9 @@
+{
+  "name": "betterimds-backend",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": ".\\mvnw.cmd spring-boot:run",
+    "dev": ".\\mvnw.cmd spring-boot:run"
+  }
+}
