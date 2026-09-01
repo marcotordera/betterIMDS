@@ -1,194 +1,209 @@
 -- =============================================================================
 -- BetterIMDS Test Seed Data: 35th Fighter Wing (Misawa Air Base, Japan - PACAF)
--- "Home of the Wild Weasels" (F-16CM / PACAF Operations)
+-- Universal Annual Mandatory Air Force / DoD Ancillary Training CBTs
 -- =============================================================================
 
 BEGIN;
 
 -- -----------------------------------------------------------------------------
--- 1. Unit Organizations (35 FW, 35 MXG, 35 MXS, 35 AMXS, 35 CES, 35 FSS)
+-- 1. Squadrons (35 FW Units)
 -- -----------------------------------------------------------------------------
-INSERT INTO public.unit_org (org_id, squadron, flight, shop_code) VALUES
--- 35 FW Staff
-(1, '35 FW', 'Wing Safety', 'SE'),
-(2, '35 FW', 'Command Post', 'CP'),
-
--- 35 MXG (Group Staff & Central Sections)
-(3, '35 MXG', 'Quality Assurance', 'QA'),
-(4, '35 MXG', 'Maintenance Training', 'MTS'),
-(5, '35 MXG', 'Plans, Scheduling & Doc', 'PS&D'),
-
--- 35 MXS (Maintenance Squadron - Backshops)
-(6, '35 MXS', 'Propulsion Flight', 'JEIM'),
-(7, '35 MXS', 'Accessories Flight', 'ELECT'),
-(8, '35 MXS', 'Fabrication Flight', 'STRUCT'),
-(9, '35 MXS', 'Armament Flight', 'GUNS'),
-
--- 35 AMXS (Aircraft Maintenance Squadron - Flightline AMUs)
-(10, '35 AMXS', '13th AMU (Panthers)', 'CREW13'),
-(11, '35 AMXS', '14th AMU (Samurais)', 'CREW14'),
-(12, '35 AMXS', 'Specialist Flight', 'SPEC'),
-
--- 35 CES (Civil Engineer Squadron)
-(13, '35 CES', 'Fire Emergency Services', 'FIRE'),
-(14, '35 CES', 'Explosive Ordnance Disposal', 'EOD'),
-(15, '35 CES', 'Operations Flight', 'CEO'),
-
--- 35 FSS (Force Support Squadron)
-(16, '35 FSS', 'Military Personnel Flight', 'MPF'),
-(17, '35 FSS', 'Force Development', 'FSD')
-ON CONFLICT (squadron, flight, shop_code) DO NOTHING;
-
+INSERT INTO public.squadron (squadron_id, squadron_name) VALUES
+(1, '35 MXS'),   -- 35th Maintenance Squadron
+(2, '35 AMXS'),  -- 35th Aircraft Maintenance Squadron
+(3, '35 CES'),   -- 35th Civil Engineer Squadron
+(4, '35 FSS'),   -- 35th Force Support Squadron
+(5, '35 MXG'),   -- 35th Maintenance Group Staff
+(6, '35 FW')     -- 35th Fighter Wing Staff
+ON CONFLICT (squadron_id) DO NOTHING;
 
 -- -----------------------------------------------------------------------------
--- 2. Course Metadata (PACAF, F-16 Wild Weasel, Base & Shop Requirements)
+-- 2. Course Metadata (Mandatory Air Force & DoD Annual CBT Catalog)
 -- -----------------------------------------------------------------------------
 INSERT INTO public.course_metadata (course_id, course_code, course_title, frequency_months, grace_period_days) VALUES
--- Universal / Flightline / PACAF Courses
-(1,  'PACAF-FL-01',   'Misawa Flightline Driving (Winter/Snow Ops)',  24, 30),
-(2,  'CBRN-MOPP-02',  'PACAF High-Threat CBRN Defense Refresher',      18, 60),
-(3,  'CPR-FA-03',     'CPR / Automated External Defibrillator (AED)', 24, 30),
-(4,  'OPSEC-CYBER-04','DoD Cyber Awareness & OPSEC Annual',          12, 15),
-
--- Maintenance & F-16 Specific Courses
-(5,  'F16-ENG-RUN',   'F-16 F110-GE-129 Engine Run Certification',     12, 30),
-(6,  'F16-EGRESS-01', 'F-16 ACES II Egress & Canopy Safety Checkout', 12, 30),
-(7,  'F16-WEAP-LOAD', 'AGM-88 HARM / JDAM Weapons Loading Cert',      6,  15),
-(8,  'MXG-QA-INSP',   '35 MXG Quality Assurance Inspector Qual',      12, 30),
-
--- Civil Engineer / Fire Courses
-(9,  'CE-FIRE-HAZ',   'Hydrazine (H-70) Emergency Response Cert',     12, 30),
-(10, 'EOD-MUN-REC',   'EOD Advanced Munitions Clearance Qual',        12, 30)
-ON CONFLICT (course_code) DO NOTHING;
-
+(1,  'CYBER-AWARE',  'DoD Cyber Awareness Challenge',             12, 30),
+(2,  'OPSEC-FUND',   'Operations Security (OPSEC) Fundamentals',  12, 30),
+(3,  'SAPR-ANNUAL',  'Sexual Assault Prevention & Response',      12, 30),
+(4,  'SUICIDE-PREV', 'Suicide Prevention & Resilience Training',  12, 30),
+(5,  'CBRN-DEFENSE', 'CBRN Defense & Chemical Warfare Awareness', 12, 30),
+(6,  'FORCE-PROT-1', 'Antiterrorism / Force Protection Level 1',  12, 30),
+(7,  'LOAC-GENEVA',  'Law of Armed Conflict (LOAC) & Geneva Conv',12, 30),
+(8,  'TCCC-TRAUMA',  'Tactical Combat Casualty Care (TCCC / SABC)',12, 30),
+(9,  'CUI-PRIVACY',  'Controlled Unclassified Info (CUI) & Privacy',12, 30),
+(10, 'NO-FEAR-ACT',  'Equal Opportunity & No FEAR Act Training',  24, 60)
+ON CONFLICT (course_id) DO NOTHING;
 
 -- -----------------------------------------------------------------------------
--- 3. Personnel Roster (Wild Weasel Personnel across Misawa units)
+-- 3. Personnel Roster
 -- -----------------------------------------------------------------------------
-INSERT INTO public.personnel (uid, edipi, first_name, last_name, rank, email, org_id, is_active) VALUES
--- 35 MXG QA
-(1,  '1035000001', 'James',     'Hawkins',   'MSgt', 'james.hawkins@test.com',   3,  TRUE),
-(2,  '1035000002', 'Elena',     'Rostova',   'TSgt', 'elena.rostova@test.com',   3,  TRUE),
+INSERT INTO public.personnel (uid, edipi, first_name, last_name, rank, email, squadron_id, is_active) VALUES
+-- 35 MXS (Squadron 1)
+(1,  '1035000001', 'Marcus',    'Vance',      'MSgt',  'marcus.vance@test.com',    1, true),
+(2,  '1035000002', 'Elena',     'Reyes',      'TSgt',  'elena.reyes@test.com',     1, true),
+(3,  '1035000003', 'Jackson',   'Lee',        'SSgt',  'jackson.lee@test.com',     1, true),
+(4,  '1035000004', 'Tyler',     'Brooks',     'SSgt',  'tyler.brooks@test.com',    1, true),
+(5,  '1035000005', 'Chloe',     'Bennett',    'SrA',   'chloe.bennett@test.com',   1, true),
+(6,  '1035000006', 'Darius',    'Washington', 'SrA',   'darius.w@test.com',        1, true),
+(7,  '1035000007', 'Liam',      'OConnor',    'A1C',   'liam.oconnor@test.com',    1, true),
+(8,  '1035000008', 'Sophia',    'Chen',       'A1C',   'sophia.chen@test.com',     1, true),
 
--- 35 MXS Propulsion (JEIM)
-(3,  '1035000003', 'Kenji',     'Tanaka',    'TSgt', 'kenji.tanaka@test.com',    6,  TRUE),
-(4,  '1035000004', 'Tyler',     'Brooks',    'SSgt', 'tyler.brooks@test.com',    6,  TRUE),
-(5,  '1035000005', 'Ashley',    'Morgan',    'SrA',  'ashley.morgan@test.com',   6,  TRUE),
+-- 35 AMXS (Squadron 2)
+(9,  '1035000009', 'Nathan',    'Drake',      'TSgt',  'nathan.drake@test.com',    2, true),
+(10, '1035000010', 'Maya',      'Lin',        'SSgt',  'maya.lin@test.com',        2, true),
+(11, '1035000011', 'Lucas',     'Gomez',      'SrA',   'lucas.gomez@test.com',     2, true),
+(12, '1035000012', 'Aiden',     'Kowalski',   'A1C',   'aiden.kowalski@test.com',  2, true),
 
--- 35 AMXS 14th AMU (Samurais)
-(6,  '1035000006', 'Brandon',   'Cole',      'MSgt', 'brandon.cole@test.com',    11, TRUE),
-(7,  '1035000007', 'David',     'Kim',       'SSgt', 'david.kim@test.com',       11, TRUE),
-(8,  '1035000008', 'Samantha',  'Hayes',     'A1C',  'samantha.hayes@test.com',  11, TRUE),
+-- 35 CES (Squadron 3)
+(13, '1035000013', 'Victor',    'Steele',     'MSgt',  'victor.steele@test.com',   3, true),
+(14, '1035000014', 'Hannah',    'Abbott',     'SSgt',  'hannah.abbott@test.com',   3, true),
 
--- 35 CES Fire & EOD
-(9,  '1035000009', 'Marcus',    'Sterling',  'TSgt', 'marcus.sterling@test.com', 13, TRUE),
-(10, '1035000010', 'Daniel',    'Vance',     'SSgt', 'daniel.vance@test.com',    14, TRUE),
+-- 35 FSS (Squadron 4)
+(15, '1035000015', 'Rachel',    'Adams',      'TSgt',  'rachel.adams@test.com',    4, true),
 
--- 35 FW Safety Staff
-(11, '1035000011', 'Rachel',    'Adams',     'Capt', 'rachel.adams@test.com',    1,  TRUE)
-ON CONFLICT (edipi) DO NOTHING;
+-- 35 MXG Staff (Squadron 5)
+(16, '1035000016', 'Kenji',     'Takahashi',  'SMSgt', 'kenji.takahashi@test.com', 5, true),
+(17, '1035000017', 'Samantha',  'Hayes',      'TSgt',  'samantha.hayes@test.com',  5, true),
 
-
--- -----------------------------------------------------------------------------
--- 4. Unit Requirements (Mandatory courses by Misawa shop)
--- -----------------------------------------------------------------------------
-INSERT INTO public.unit_requirements (org_id, course_id) VALUES
--- 35 MXS Propulsion (JEIM): Flightline Driving, Engine Run, Egress, CPR
-(6, 1),
-(6, 3),
-(6, 5),
-(6, 6),
-
--- 35 AMXS 14th AMU: Flightline Driving, Egress, Weapons Load, CBRN
-(11, 1),
-(11, 2),
-(11, 6),
-(11, 7),
-
--- 35 MXG QA: Flightline Driving, QA Inspector, Egress, Engine Run
-(3, 1),
-(3, 5),
-(3, 6),
-(3, 8),
-
--- 35 CES Fire: Hydrazine Response, CPR, Flightline Driving
-(13, 1),
-(13, 3),
-(13, 9),
-
--- 35 FW Safety: Cyber, Flightline Driving
-(1, 1),
-(1, 4)
-ON CONFLICT (org_id, course_id) DO NOTHING;
-
+-- 35 FW Staff (Squadron 6)
+(18, '1035000018', 'Alexander', 'Cross',      'Col',   'alexander.cross@test.com', 6, true)
+ON CONFLICT (uid) DO NOTHING;
 
 -- -----------------------------------------------------------------------------
--- 5. Completion Tracker (Active, Expiring, and Overdue Training Logs)
+-- 4. Squadron Training Requirements (Mandatory CBTs assigned to all squadrons)
 -- -----------------------------------------------------------------------------
-INSERT INTO public.completion_tracker (trainee_uid, course_id, completed_date, expiration_date, signed_off_by_uid) VALUES
--- Tyler Brooks (SSgt - 35 MXS JEIM): Fully Current on Engine Run and Driving
-(4, 5, '2025-11-10', '2026-11-10', 3),  -- Engine Run signed by TSgt Tanaka
-(4, 1, '2024-10-01', '2026-10-01', 1),  -- Flightline Driving signed by MSgt Hawkins
-(4, 6, '2025-09-15', '2026-09-15', 3),  -- Egress Safety
+INSERT INTO public.unit_requirements (requirement_id, squadron_id, course_id) VALUES
+-- 35 MXS Annual CBTs
+(1,  1, 1),   -- CYBER-AWARE
+(2,  1, 2),   -- OPSEC-FUND
+(3,  1, 3),   -- SAPR-ANNUAL
+(4,  1, 4),   -- SUICIDE-PREV
+(5,  1, 5),   -- CBRN-DEFENSE
+(6,  1, 6),   -- FORCE-PROT-1
+(7,  1, 7),   -- LOAC-GENEVA
+(8,  1, 8),   -- TCCC-TRAUMA
 
--- Ashley Morgan (SrA - 35 MXS JEIM): Driving is CURRENT, Engine Run EXPIRED (Overdue test case)
-(5, 1, '2025-05-20', '2027-05-20', 4),  -- Flightline Driving signed by SSgt Brooks
-(5, 5, '2024-04-10', '2025-04-10', 3),  -- F-16 Engine Run: EXPIRED (Needs recert)
+-- 35 AMXS Annual CBTs
+(9,  2, 1),   -- CYBER-AWARE
+(10, 2, 2),   -- OPSEC-FUND
+(11, 2, 3),   -- SAPR-ANNUAL
+(12, 2, 4),   -- SUICIDE-PREV
+(13, 2, 5),   -- CBRN-DEFENSE
+(14, 2, 6),   -- FORCE-PROT-1
+(15, 2, 7),   -- LOAC-GENEVA
+(16, 2, 8),   -- TCCC-TRAUMA
 
--- David Kim (SSgt - 35 AMXS 14th AMU): Current on HARM Weapons Loading & Egress
-(7, 7, '2026-03-01', '2026-09-01', 6),  -- 6-Month HARM load cert signed by MSgt Cole
-(7, 6, '2025-12-01', '2026-12-01', 6),  -- Egress Safety
-(7, 1, '2024-06-01', '2026-06-01', 1),  -- Flightline Driving (Due Soon)
+-- 35 CES Annual CBTs
+(17, 3, 1),
+(18, 3, 2),
+(19, 3, 3),
+(20, 3, 4),
+(21, 3, 6),
+(22, 3, 8),
 
--- Marcus Sterling (TSgt - 35 CES Fire): Hydrazine Emergency Response
-(9, 9, '2025-08-15', '2026-08-15', 11), -- Signed by Capt Adams (Safety)
-(9, 3, '2025-02-10', '2027-02-10', 11)  -- CPR / AED
-ON CONFLICT DO NOTHING;
-
+-- 35 FSS Annual CBTs
+(23, 4, 1),
+(24, 4, 2),
+(25, 4, 3),
+(26, 4, 4),
+(27, 4, 6),
+(28, 4, 9)
+ON CONFLICT (squadron_id, course_id) DO NOTHING;
 
 -- -----------------------------------------------------------------------------
--- 6. Personnel Overrides / Waivers
+-- 5. Completion Tracker (Historical CBT Logs & Expirations)
 -- -----------------------------------------------------------------------------
-INSERT INTO public.personnel_requirements_override (trainee_uid, course_id, override_type, reason) VALUES
--- Ashley Morgan has a temporary profile waiver for Egress test until physical therapy complete
-(5, 6, 'WAIVER', 'Temporary medical profile waiver approved by 35 MDG and 35 MXG/CC (Exp Oct 2026)')
+INSERT INTO public.completion_tracker (log_id, trainee_uid, course_id, completed_date, expiration_date, signed_off_by_uid) VALUES
+-- Marcus Vance (MSgt - 35 MXS) - 100% Green
+(1,  1,  1, '2025-10-15', '2026-10-15', 16),
+(2,  1,  2, '2025-10-15', '2026-10-15', 16),
+(3,  1,  3, '2025-11-20', '2026-11-20', 16),
+(4,  1,  4, '2025-11-20', '2026-11-20', 16),
+(5,  1,  5, '2025-09-10', '2026-09-10', 16),
+(6,  1,  6, '2025-09-10', '2026-09-10', 16),
+
+-- Elena Reyes (TSgt - 35 MXS) - 100% Green
+(7,  2,  1, '2025-08-14', '2026-08-14', 1),
+(8,  2,  2, '2025-08-14', '2026-08-14', 1),
+(9,  2,  3, '2025-10-01', '2026-10-01', 1),
+(10, 2,  4, '2025-10-01', '2026-10-01', 1),
+(11, 2,  5, '2025-10-05', '2026-10-05', 1),
+(12, 2,  6, '2025-10-05', '2026-10-05', 1),
+
+-- Jackson Lee (SSgt - 35 MXS) - Expiring Soon (Yellow)
+(13, 3,  1, '2025-09-15', '2026-09-15', 2),
+(14, 3,  2, '2025-09-15', '2026-09-15', 2),
+(15, 3,  3, '2025-07-20', '2026-07-20', 2),
+(16, 3,  4, '2025-07-20', '2026-07-20', 2),
+
+-- Tyler Brooks (SSgt - 35 MXS) - Overdue (Red)
+(17, 4,  1, '2024-06-10', '2025-06-10', 2), -- Expired Red!
+(18, 4,  2, '2024-06-10', '2025-06-10', 2), -- Expired Red!
+(19, 4,  3, '2025-09-25', '2026-09-25', 2),
+(20, 4,  4, '2025-09-25', '2026-09-25', 2),
+
+-- Chloe Bennett (SrA - 35 MXS)
+(21, 5,  1, '2025-12-05', '2026-12-05', 3),
+(22, 5,  2, '2025-12-05', '2026-12-05', 3),
+(23, 5,  3, '2025-10-12', '2026-10-12', 3),
+
+-- Darius Washington (SrA - 35 MXS)
+(24, 6,  1, '2025-08-10', '2026-08-10', 4),
+(25, 6,  2, '2025-08-10', '2026-08-10', 4),
+
+-- Nathan Drake (TSgt - 35 AMXS)
+(26, 9,  1, '2025-10-10', '2026-10-10', 16),
+(27, 9,  2, '2025-10-10', '2026-10-10', 16),
+(28, 9,  3, '2025-11-05', '2026-11-05', 16),
+(29, 9,  4, '2025-11-05', '2026-11-05', 16),
+(30, 9,  6, '2025-09-15', '2026-09-15', 16)
+ON CONFLICT (log_id) DO NOTHING;
+
+-- -----------------------------------------------------------------------------
+-- 6. Personnel Requirements Override (Waivers / Exemptions)
+-- -----------------------------------------------------------------------------
+INSERT INTO public.personnel_requirements_override (override_id, trainee_uid, course_id, override_type, reason) VALUES
+-- Chloe Bennett (SrA - 35 MXS) has medical profile waiver for CBRN
+(1, 5, 5, 'WAIVER',    'Medical profile - respiratory mask fit waiver through Q4'),
+-- Darius Washington (SrA - 35 MXS) has temporary deployment exemption
+(2, 6, 8, 'EXEMPTION', 'TDY to Kadena AB supporting Cope North exercise')
 ON CONFLICT (trainee_uid, course_id) DO NOTHING;
 
-
 -- -----------------------------------------------------------------------------
--- 7. Admin / UTM Accounts
+-- 7. UTM Admin Users
 -- -----------------------------------------------------------------------------
 INSERT INTO public.admin_user (admin_id, username, email, full_name, role, is_active) VALUES
--- MSgt Hawkins: 35 MXG Group UTM (Manages MXG, MXS, AMXS)
-(1, 'msgt.hawkins', 'james.hawkins@test.com', 'MSgt James Hawkins', 'GROUP_UTM', TRUE),
-
--- Capt Adams: 35 FW Wing Training Officer (Manages all units across base)
-(2, 'capt.adams', 'rachel.adams@test.com', 'Capt Rachel Adams', 'WING_UTM', TRUE),
-
--- TSgt Tanaka: 35 MXS Squadron UTM
-(3, 'tsgt.tanaka', 'kenji.tanaka@test.com', 'TSgt Kenji Tanaka', 'SQUADRON_UTM', TRUE)
-ON CONFLICT (username) DO NOTHING;
-
+(1, 'utm_mxs',  'elena.reyes@test.com',     'TSgt Elena Reyes',     'SQUADRON_UTM', true),
+(2, 'utm_amxs', 'nathan.drake@test.com',    'TSgt Nathan Drake',    'SQUADRON_UTM', true),
+(3, 'utm_wing', 'samantha.hayes@test.com', 'TSgt Samantha Hayes',  'WING_UTM',     true)
+ON CONFLICT (admin_id) DO NOTHING;
 
 -- -----------------------------------------------------------------------------
--- 8. Admin Unit Scope (Units each UTM is authorized to manage)
+-- 8. UTM Admin Unit Scope (Squadron Access Matrix)
 -- -----------------------------------------------------------------------------
-INSERT INTO public.admin_unit_scope (admin_id, org_id) VALUES
--- MSgt Hawkins (Group UTM) has scope over 35 MXG, 35 MXS, and 35 AMXS shops (org_ids: 3-12)
-(1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9), (1, 10), (1, 11), (1, 12),
-
--- TSgt Tanaka (Squadron UTM) has scope over 35 MXS backshops (org_ids: 6-9)
-(3, 6), (3, 7), (3, 8), (3, 9)
-ON CONFLICT (admin_id, org_id) DO NOTHING;
-
+INSERT INTO public.admin_unit_scope (scope_id, admin_id, squadron_id) VALUES
+-- TSgt Elena Reyes manages 35 MXS
+(1, 1, 1),
+-- TSgt Nathan Drake manages 35 AMXS
+(2, 2, 2),
+-- TSgt Samantha Hayes (Wing UTM) manages all squadrons
+(3, 3, 1),
+(4, 3, 2),
+(5, 3, 3),
+(6, 3, 4),
+(7, 3, 5),
+(8, 3, 6)
+ON CONFLICT (admin_id, squadron_id) DO NOTHING;
 
 -- -----------------------------------------------------------------------------
--- 9. Reset Sequence Counters (Prevents ID collisions on new inserts)
+-- Sequence Reset
 -- -----------------------------------------------------------------------------
-SELECT setval('public.unit_org_org_id_seq', COALESCE((SELECT MAX(org_id) FROM public.unit_org), 1));
-SELECT setval('public.course_metadata_course_id_seq', COALESCE((SELECT MAX(course_id) FROM public.course_metadata), 1));
-SELECT setval('public.personnel_uid_seq', COALESCE((SELECT MAX(uid) FROM public.personnel), 1));
-SELECT setval('public.admin_user_admin_id_seq', COALESCE((SELECT MAX(admin_id) FROM public.admin_user), 1));
-SELECT setval('public.admin_unit_scope_scope_id_seq', COALESCE((SELECT MAX(scope_id) FROM public.admin_unit_scope), 1));
+SELECT setval('public.squadron_squadron_id_seq', (SELECT MAX(squadron_id) FROM public.squadron));
+SELECT setval('public.course_metadata_course_id_seq', (SELECT MAX(course_id) FROM public.course_metadata));
+SELECT setval('public.personnel_uid_seq', (SELECT MAX(uid) FROM public.personnel));
+SELECT setval('public.unit_requirements_requirement_id_seq', (SELECT MAX(requirement_id) FROM public.unit_requirements));
+SELECT setval('public.completion_tracker_log_id_seq', (SELECT MAX(log_id) FROM public.completion_tracker));
+SELECT setval('public.personnel_requirements_override_override_id_seq', (SELECT MAX(override_id) FROM public.personnel_requirements_override));
+SELECT setval('public.admin_user_admin_id_seq', (SELECT MAX(admin_id) FROM public.admin_user));
+SELECT setval('public.admin_unit_scope_scope_id_seq', (SELECT MAX(scope_id) FROM public.admin_unit_scope));
 
 COMMIT;

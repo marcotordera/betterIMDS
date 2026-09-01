@@ -28,8 +28,8 @@ public class AdminUnitScope {
     private AdminUser adminUser;
 
     @ManyToOne
-    @JoinColumn(name = "org_id")
-    private UnitOrg unitOrg;
+    @JoinColumn(name = "squadron_id")
+    private Squadron squadron;
 
     private LocalDateTime createdAt;
 }

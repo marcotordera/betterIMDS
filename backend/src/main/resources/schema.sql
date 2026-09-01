@@ -1,29 +1,25 @@
 -- =============================================================================
--- BetterIMDS Database Schema (PostgreSQL)
--- File: backend/src/main/resources/schema.sql
--- Description: Core schema backup for BetterIMDS tables, relationships, and constraints.
+-- BetterIMDS Database Schema (PostgreSQL) - Squadron Scope
+-- Designed for 35th Fighter Wing (Misawa Air Base) UTM Admin Portal
 -- =============================================================================
 
-BEGIN;
-
--- 1. Wipe out any lingering partial schemas cleanly in public
+-- 1. Drop existing tables in reverse dependency order
 DROP TABLE IF EXISTS public.admin_unit_scope CASCADE;
 DROP TABLE IF EXISTS public.admin_user CASCADE;
 DROP TABLE IF EXISTS public.personnel_requirements_override CASCADE;
 DROP TABLE IF EXISTS public.completion_tracker CASCADE;
 DROP TABLE IF EXISTS public.unit_requirements CASCADE;
-DROP TABLE IF EXISTS public.course_metadata CASCADE;
 DROP TABLE IF EXISTS public.personnel CASCADE;
+DROP TABLE IF EXISTS public.course_metadata CASCADE;
+DROP TABLE IF EXISTS public.squadron CASCADE;
 DROP TABLE IF EXISTS public.unit_org CASCADE;
 
--- 2. Create foundational structures first (No dependencies)
--- Unit Hierarchy (Squadron -> Flight -> Shop)
-CREATE TABLE public.unit_org (
-    org_id SERIAL PRIMARY KEY,
-    squadron VARCHAR(100) NOT NULL,      
-    flight VARCHAR(50) NOT NULL,         
-    shop_code VARCHAR(10) NOT NULL,      
-    CONSTRAINT unique_shop UNIQUE (squadron, flight, shop_code)
+-- 2. Foundational Tables
+
+-- Squadrons (Primary Unit Scope)
+CREATE TABLE public.squadron (
+    squadron_id SERIAL PRIMARY KEY,
+    squadron_name VARCHAR(100) UNIQUE NOT NULL
 );
 
 -- Course Catalog & Compliance Rules
@@ -35,7 +31,7 @@ CREATE TABLE public.course_metadata (
     grace_period_days INT DEFAULT 30         
 );
 
--- 3. Create the roster (Depends ONLY on unit_org)
+-- 3. Personnel Roster
 CREATE TABLE public.personnel (
     uid SERIAL PRIMARY KEY,
     edipi VARCHAR(10) UNIQUE NOT NULL,   
@@ -43,60 +39,58 @@ CREATE TABLE public.personnel (
     last_name VARCHAR(50) NOT NULL,
     rank VARCHAR(10) NOT NULL,
     email VARCHAR(100),
-    org_id INT REFERENCES public.unit_org(org_id) ON DELETE SET NULL,
+    squadron_id INT REFERENCES public.squadron(squadron_id) ON DELETE SET NULL,
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 4. Create junction requirements (Depends on unit_org and course_metadata)
+-- 4. Squadron Training Requirements
 CREATE TABLE public.unit_requirements (
     requirement_id SERIAL PRIMARY KEY,
-    org_id INT REFERENCES public.unit_org(org_id) ON DELETE CASCADE,
-    course_id INT REFERENCES public.course_metadata(course_id) ON DELETE CASCADE,
+    squadron_id INT NOT NULL REFERENCES public.squadron(squadron_id) ON DELETE CASCADE,
+    course_id INT NOT NULL REFERENCES public.course_metadata(course_id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT unique_unit_course UNIQUE (org_id, course_id)
+    CONSTRAINT unique_squadron_course UNIQUE (squadron_id, course_id)
 );
 
--- 5. Create tracker (Depends on personnel and course_metadata)
+-- 5. Completion Tracker (Historical Logs & Expirations)
 CREATE TABLE public.completion_tracker (
     log_id SERIAL PRIMARY KEY,
-    trainee_uid INT REFERENCES public.personnel(uid) ON DELETE CASCADE,
-    course_id INT REFERENCES public.course_metadata(course_id) ON DELETE CASCADE,
+    trainee_uid INT NOT NULL REFERENCES public.personnel(uid) ON DELETE CASCADE,
+    course_id INT NOT NULL REFERENCES public.course_metadata(course_id) ON DELETE CASCADE,
     completed_date DATE NOT NULL,
-    expiration_date DATE NOT NULL,           
-    signed_off_by_uid INT REFERENCES public.personnel(uid) ON DELETE SET NULL, 
+    expiration_date DATE,                
+    signed_off_by_uid INT REFERENCES public.personnel(uid) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 6. Create overrides/waivers (Depends on personnel and course_metadata)
+-- 6. Personnel Requirements Override (Waivers / Exemptions)
 CREATE TABLE public.personnel_requirements_override (
     override_id SERIAL PRIMARY KEY,
-    trainee_uid INT REFERENCES public.personnel(uid) ON DELETE CASCADE,
-    course_id INT REFERENCES public.course_metadata(course_id) ON DELETE CASCADE,
-    override_type VARCHAR(20) NOT NULL,      
-    reason TEXT NOT NULL,                    
+    trainee_uid INT NOT NULL REFERENCES public.personnel(uid) ON DELETE CASCADE,
+    course_id INT NOT NULL REFERENCES public.course_metadata(course_id) ON DELETE CASCADE,
+    override_type VARCHAR(20) NOT NULL,   
+    reason TEXT NOT NULL,                
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT unique_person_course_override UNIQUE (trainee_uid, course_id)
 );
 
--- 7. Admin / UTM Accounts (Independent administrative identities)
+-- 7. UTM Admin Users
 CREATE TABLE public.admin_user (
     admin_id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
+    email VARCHAR(100) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
-    role VARCHAR(30) NOT NULL DEFAULT 'SQUADRON_UTM', -- 'SUPER_ADMIN', 'WING_UTM', 'GROUP_UTM', 'SQUADRON_UTM'
+    role VARCHAR(50) NOT NULL DEFAULT 'SQUADRON_UTM',
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 8. Multi-Unit Scope (Which Squadrons/Shops this UTM Admin manages)
+-- 8. UTM Admin Unit Scope (Multi-Squadron Management)
 CREATE TABLE public.admin_unit_scope (
     scope_id SERIAL PRIMARY KEY,
-    admin_id INT REFERENCES public.admin_user(admin_id) ON DELETE CASCADE,
-    org_id INT REFERENCES public.unit_org(org_id) ON DELETE CASCADE,
+    admin_id INT NOT NULL REFERENCES public.admin_user(admin_id) ON DELETE CASCADE,
+    squadron_id INT NOT NULL REFERENCES public.squadron(squadron_id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT unique_admin_unit_scope UNIQUE (admin_id, org_id)
+    CONSTRAINT unique_admin_squadron_scope UNIQUE (admin_id, squadron_id)
 );
-
-COMMIT;

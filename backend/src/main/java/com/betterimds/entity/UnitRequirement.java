@@ -24,8 +24,8 @@ public class UnitRequirement {
     private Integer requirementId;
 
     @ManyToOne
-    @JoinColumn(name = "org_id")
-    private UnitOrg unitOrg;
+    @JoinColumn(name = "squadron_id")
+    private Squadron squadron;
 
     @ManyToOne
     @JoinColumn(name = "course_id")

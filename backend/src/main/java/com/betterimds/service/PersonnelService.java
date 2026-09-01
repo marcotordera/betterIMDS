@@ -1,7 +1,10 @@
 package com.betterimds.service;
 
 import com.betterimds.entity.Personnel;
+import com.betterimds.entity.Squadron;
 import com.betterimds.repository.PersonnelRepository;
+import com.betterimds.repository.SquadronRepository;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,44 +14,51 @@ import java.util.Optional;
 public class PersonnelService {
 
     private final PersonnelRepository personnelRepository;
+    private final SquadronRepository squadronRepository;
 
-    public PersonnelService(PersonnelRepository personnelRepository) {
+    public PersonnelService(PersonnelRepository personnelRepository, SquadronRepository squadronRepository) {
         this.personnelRepository = personnelRepository;
+        this.squadronRepository = squadronRepository;
     }
 
-    public List<Personnel> getPersonnelByUnit(String unit) {
-        return personnelRepository.findBySquadron(unit);
+    public List<Personnel> getPersonnelBySquadron(String squadronName) {
+        Squadron squadronProbe = new Squadron(null, squadronName);
+        Optional<Squadron> targetSquadron = squadronRepository.findOne(Example.of(squadronProbe));
+
+        if (targetSquadron.isPresent()) {
+            Personnel personProbe = new Personnel();
+            personProbe.setSquadron(targetSquadron.get());
+            return personnelRepository.findAll(Example.of(personProbe));
+        }
+
+        return List.of();
+    }
+
+    public Optional<Personnel> getPersonnelByEdipi(String edipi) {
+        Personnel probe = new Personnel();
+        probe.setEdipi(edipi);
+        return personnelRepository.findOne(Example.of(probe));
+    }
+
+    public List<Personnel> getActivePersonnel() {
+        Personnel probe = new Personnel();
+        probe.setIsActive(true);
+        return personnelRepository.findAll(Example.of(probe));
     }
 
     public List<Personnel> getAllPersonnel() {
         return personnelRepository.findAll();
     }
 
-    public List<Personnel> getActivePersonnel() {
-        return personnelRepository.findActive();
-    }
-
     public Optional<Personnel> getPersonnelById(Integer id) {
-        if (id != null) {
-            return personnelRepository.findById(id);
-        }
-        return Optional.empty();
-    }
-
-    public Optional<Personnel> getPersonnelByEdipi(String edipi) {
-        return personnelRepository.findByEdipi(edipi);
+        return personnelRepository.findById(id);
     }
 
     public Personnel savePersonnel(Personnel personnel) {
-        if (personnel != null) {
-            return personnelRepository.save(personnel);
-        }
-        return null;
+        return personnelRepository.save(personnel);
     }
 
     public void deletePersonnel(Integer id) {
-        if (id != null) {
-            personnelRepository.deleteById(id);
-        }
+        personnelRepository.deleteById(id);
     }
 }

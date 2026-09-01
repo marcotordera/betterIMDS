@@ -29,8 +29,8 @@ public class Personnel {
     private String email;
 
     @ManyToOne
-    @JoinColumn(name = "org_id")
-    private UnitOrg unitOrg;
+    @JoinColumn(name = "squadron_id")
+    private Squadron squadron;
 
     private Boolean isActive = true;
     private LocalDateTime createdAt;

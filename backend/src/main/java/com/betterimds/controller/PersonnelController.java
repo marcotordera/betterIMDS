@@ -18,16 +18,16 @@ public class PersonnelController {
     }
 
     @GetMapping
-    public List<Personnel> getPersonnel(@RequestParam(required = false) String unit) {
-        if (unit != null && !unit.isBlank()) {
-            return personnelService.getPersonnelByUnit(unit.trim());
+    public List<Personnel> getPersonnel(@RequestParam(required = false) String squadron) {
+        if (squadron != null && !squadron.isBlank()) {
+            return personnelService.getPersonnelBySquadron(squadron.trim());
         }
         return personnelService.getAllPersonnel();
     }
 
-    @GetMapping("/unit/{unit}")
-    public List<Personnel> getPersonnelByUnit(@PathVariable String unit) {
-        return personnelService.getPersonnelByUnit(unit);
+    @GetMapping("/squadron/{squadron}")
+    public List<Personnel> getPersonnelBySquadron(@PathVariable String squadron) {
+        return personnelService.getPersonnelBySquadron(squadron);
     }
 
     @GetMapping("/{id}")

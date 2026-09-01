@@ -14,12 +14,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UnitOrg {
+public class Squadron {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer orgId;
-    private String squadron;
-    private String flight;
-    private String shopCode;
+    private Integer squadronId;
+    private String squadronName;
 }
