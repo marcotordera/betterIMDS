@@ -3,7 +3,6 @@ package com.betterimds.repository;
 import com.betterimds.entity.PersonnelRequirementOverride;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,5 +11,5 @@ import java.util.List;
 public interface PersonnelRequirementOverrideRepository extends JpaRepository<PersonnelRequirementOverride, Integer> {
 
     @Query("SELECT o FROM PersonnelRequirementOverride o WHERE o.trainee.uid = :uid")
-    List<PersonnelRequirementOverride> findByTraineeUid(@Param("uid") Integer uid);
+    List<PersonnelRequirementOverride> findByTraineeUid(Integer uid);
 }
