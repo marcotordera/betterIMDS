@@ -1,6 +1,9 @@
 package com.betterimds.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,8 +17,6 @@ public class AdminUser {
     private String fullName;
     private String role = "SQUADRON_UTM";
     private Boolean isActive = true;
-
-    @Column(insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
     public AdminUser() {

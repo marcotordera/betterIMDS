@@ -1,6 +1,11 @@
 package com.betterimds.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,7 +23,6 @@ public class UnitRequirement {
     @JoinColumn(name = "course_id")
     private CourseMetadata course;
 
-    @Column(insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
     public UnitRequirement() {
