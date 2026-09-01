@@ -7,6 +7,8 @@
 BEGIN;
 
 -- 1. Wipe out any lingering partial schemas cleanly in public
+DROP TABLE IF EXISTS public.admin_unit_scope CASCADE;
+DROP TABLE IF EXISTS public.admin_user CASCADE;
 DROP TABLE IF EXISTS public.personnel_requirements_override CASCADE;
 DROP TABLE IF EXISTS public.completion_tracker CASCADE;
 DROP TABLE IF EXISTS public.unit_requirements CASCADE;
@@ -75,6 +77,26 @@ CREATE TABLE public.personnel_requirements_override (
     reason TEXT NOT NULL,                    
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT unique_person_course_override UNIQUE (trainee_uid, course_id)
+);
+
+-- 7. Admin / UTM Accounts (Independent administrative identities)
+CREATE TABLE public.admin_user (
+    admin_id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    full_name VARCHAR(100) NOT NULL,
+    role VARCHAR(30) NOT NULL DEFAULT 'SQUADRON_UTM', -- 'SUPER_ADMIN', 'WING_UTM', 'GROUP_UTM', 'SQUADRON_UTM'
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 8. Multi-Unit Scope (Which Squadrons/Shops this UTM Admin manages)
+CREATE TABLE public.admin_unit_scope (
+    scope_id SERIAL PRIMARY KEY,
+    admin_id INT REFERENCES public.admin_user(admin_id) ON DELETE CASCADE,
+    org_id INT REFERENCES public.unit_org(org_id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_admin_unit_scope UNIQUE (admin_id, org_id)
 );
 
 COMMIT;

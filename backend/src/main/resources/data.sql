@@ -156,10 +156,39 @@ ON CONFLICT (trainee_uid, course_id) DO NOTHING;
 
 
 -- -----------------------------------------------------------------------------
--- 7. Reset Sequence Counters (Prevents ID collisions on new inserts)
+-- 7. Admin / UTM Accounts
+-- -----------------------------------------------------------------------------
+INSERT INTO public.admin_user (admin_id, username, email, full_name, role, is_active) VALUES
+-- MSgt Hawkins: 35 MXG Group UTM (Manages MXG, MXS, AMXS)
+(1, 'msgt.hawkins', 'james.hawkins@test.com', 'MSgt James Hawkins', 'GROUP_UTM', TRUE),
+
+-- Capt Adams: 35 FW Wing Training Officer (Manages all units across base)
+(2, 'capt.adams', 'rachel.adams@test.com', 'Capt Rachel Adams', 'WING_UTM', TRUE),
+
+-- TSgt Tanaka: 35 MXS Squadron UTM
+(3, 'tsgt.tanaka', 'kenji.tanaka@test.com', 'TSgt Kenji Tanaka', 'SQUADRON_UTM', TRUE)
+ON CONFLICT (username) DO NOTHING;
+
+
+-- -----------------------------------------------------------------------------
+-- 8. Admin Unit Scope (Units each UTM is authorized to manage)
+-- -----------------------------------------------------------------------------
+INSERT INTO public.admin_unit_scope (admin_id, org_id) VALUES
+-- MSgt Hawkins (Group UTM) has scope over 35 MXG, 35 MXS, and 35 AMXS shops (org_ids: 3-12)
+(1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1, 8), (1, 9), (1, 10), (1, 11), (1, 12),
+
+-- TSgt Tanaka (Squadron UTM) has scope over 35 MXS backshops (org_ids: 6-9)
+(3, 6), (3, 7), (3, 8), (3, 9)
+ON CONFLICT (admin_id, org_id) DO NOTHING;
+
+
+-- -----------------------------------------------------------------------------
+-- 9. Reset Sequence Counters (Prevents ID collisions on new inserts)
 -- -----------------------------------------------------------------------------
 SELECT setval('public.unit_org_org_id_seq', COALESCE((SELECT MAX(org_id) FROM public.unit_org), 1));
 SELECT setval('public.course_metadata_course_id_seq', COALESCE((SELECT MAX(course_id) FROM public.course_metadata), 1));
 SELECT setval('public.personnel_uid_seq', COALESCE((SELECT MAX(uid) FROM public.personnel), 1));
+SELECT setval('public.admin_user_admin_id_seq', COALESCE((SELECT MAX(admin_id) FROM public.admin_user), 1));
+SELECT setval('public.admin_unit_scope_scope_id_seq', COALESCE((SELECT MAX(scope_id) FROM public.admin_unit_scope), 1));
 
 COMMIT;

@@ -2,6 +2,8 @@ package com.betterimds.repository;
 
 import com.betterimds.entity.Personnel;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,28 +12,15 @@ import java.util.Optional;
 @Repository
 public interface PersonnelRepository extends JpaRepository<Personnel, Integer> {
 
-    // Unique EDIPI lookup
-    Optional<Personnel> findByEdipi(String edipi);
+    @Query("SELECT p FROM Personnel p WHERE LOWER(p.unitOrg.squadron) = LOWER(:squadron)")
+    List<Personnel> findBySquadron(@Param("squadron") String squadron);
 
-    boolean existsByEdipi(String edipi);
+    @Query("SELECT p FROM Personnel p WHERE p.edipi = :edipi")
+    Optional<Personnel> findByEdipi(@Param("edipi") String edipi);
 
-    // Email lookup
-    Optional<Personnel> findByEmail(String email);
+    @Query("SELECT p FROM Personnel p WHERE p.isActive = true")
+    List<Personnel> findActive();
 
-    // Active roster queries
-    List<Personnel> findByIsActiveTrue();
-
-    List<Personnel> findByUnitOrgOrgId(Integer orgId);
-
-    List<Personnel> findByUnitOrgOrgIdAndIsActiveTrue(Integer orgId);
-
-    // Search by squadron/unit
-    List<Personnel> findByUnitOrgSquadron(String squadron);
-    List<Personnel> findByUnitOrgSquadronIgnoreCase(String squadron);
-
-    // Search by name
-    List<Personnel> findByLastNameContainingIgnoreCaseOrFirstNameContainingIgnoreCase(String lastName, String firstName);
-
-    // Search by rank
-    List<Personnel> findByRank(String rank);
+    @Query("SELECT p FROM Personnel p WHERE p.unitOrg.orgId = :orgId")
+    List<Personnel> findByOrgId(@Param("orgId") Integer orgId);
 }

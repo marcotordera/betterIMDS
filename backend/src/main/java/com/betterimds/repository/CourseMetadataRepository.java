@@ -2,6 +2,8 @@ package com.betterimds.repository;
 
 import com.betterimds.entity.CourseMetadata;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,12 +12,9 @@ import java.util.Optional;
 @Repository
 public interface CourseMetadataRepository extends JpaRepository<CourseMetadata, Integer> {
 
-    // Unique course code lookup
-    Optional<CourseMetadata> findByCourseCode(String courseCode);
+    @Query("SELECT c FROM CourseMetadata c WHERE c.courseCode = :code")
+    Optional<CourseMetadata> findByCourseCode(@Param("code") String code);
 
-    boolean existsByCourseCode(String courseCode);
-
-    // Search by title or code keyword
-    List<CourseMetadata> findByCourseTitleContainingIgnoreCase(String keyword);
-    List<CourseMetadata> findByCourseCodeContainingIgnoreCase(String keyword);
+    @Query("SELECT c FROM CourseMetadata c WHERE LOWER(c.courseTitle) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    List<CourseMetadata> searchByTitle(@Param("keyword") String keyword);
 }

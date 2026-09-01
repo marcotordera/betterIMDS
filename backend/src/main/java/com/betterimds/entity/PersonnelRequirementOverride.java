@@ -2,38 +2,26 @@ package com.betterimds.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
-@Table(
-    name = "personnel_requirements_override",
-    schema = "public",
-    uniqueConstraints = {
-        @UniqueConstraint(name = "unique_person_course_override", columnNames = {"trainee_uid", "course_id"})
-    }
-)
 public class PersonnelRequirementOverride {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "override_id")
     private Integer overrideId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "trainee_uid", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "trainee_uid")
     private Personnel trainee;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "course_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "course_id")
     private CourseMetadata course;
 
-    @Column(name = "override_type", nullable = false, length = 20)
-    private String overrideType; // e.g. "EXEMPT", "WAIVER", "SUBSTITUTION"
-
-    @Column(name = "reason", nullable = false, columnDefinition = "TEXT")
+    private String overrideType;
     private String reason;
 
-    @Column(name = "created_at", insertable = false, updatable = false)
+    @Column(insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
     public PersonnelRequirementOverride() {
@@ -92,18 +80,5 @@ public class PersonnelRequirementOverride {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        PersonnelRequirementOverride that = (PersonnelRequirementOverride) o;
-        return Objects.equals(overrideId, that.overrideId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(overrideId);
     }
 }
