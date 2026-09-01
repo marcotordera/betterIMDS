@@ -3,13 +3,11 @@ package com.betterimds.service;
 import com.betterimds.entity.Personnel;
 import com.betterimds.repository.PersonnelRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional(readOnly = true)
 public class PersonnelService {
 
     private final PersonnelRepository personnelRepository;
@@ -41,7 +39,6 @@ public class PersonnelService {
         return personnelRepository.findByEdipi(edipi);
     }
 
-    @Transactional
     public Personnel savePersonnel(Personnel personnel) {
         if (personnel != null) {
             return personnelRepository.save(personnel);
@@ -49,7 +46,6 @@ public class PersonnelService {
         return null;
     }
 
-    @Transactional
     public void deletePersonnel(Integer id) {
         if (id != null) {
             personnelRepository.deleteById(id);
