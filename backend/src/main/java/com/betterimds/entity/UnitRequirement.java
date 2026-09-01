@@ -6,9 +6,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UnitRequirement {
 
     @Id
@@ -24,44 +32,4 @@ public class UnitRequirement {
     private CourseMetadata course;
 
     private LocalDateTime createdAt;
-
-    public UnitRequirement() {
-    }
-
-    public UnitRequirement(UnitOrg unitOrg, CourseMetadata course) {
-        this.unitOrg = unitOrg;
-        this.course = course;
-    }
-
-    public Integer getRequirementId() {
-        return requirementId;
-    }
-
-    public void setRequirementId(Integer requirementId) {
-        this.requirementId = requirementId;
-    }
-
-    public UnitOrg getUnitOrg() {
-        return unitOrg;
-    }
-
-    public void setUnitOrg(UnitOrg unitOrg) {
-        this.unitOrg = unitOrg;
-    }
-
-    public CourseMetadata getCourse() {
-        return course;
-    }
-
-    public void setCourse(CourseMetadata course) {
-        this.course = course;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 }

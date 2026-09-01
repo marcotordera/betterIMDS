@@ -6,9 +6,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Personnel {
 
     @Id
@@ -26,89 +34,4 @@ public class Personnel {
 
     private Boolean isActive = true;
     private LocalDateTime createdAt;
-
-    public Personnel() {
-    }
-
-    public Personnel(String edipi, String firstName, String lastName, String rank, String email, UnitOrg unitOrg) {
-        this.edipi = edipi;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.rank = rank;
-        this.email = email;
-        this.unitOrg = unitOrg;
-        this.isActive = true;
-    }
-
-    public Integer getUid() {
-        return uid;
-    }
-
-    public void setUid(Integer uid) {
-        this.uid = uid;
-    }
-
-    public String getEdipi() {
-        return edipi;
-    }
-
-    public void setEdipi(String edipi) {
-        this.edipi = edipi;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getRank() {
-        return rank;
-    }
-
-    public void setRank(String rank) {
-        this.rank = rank;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public UnitOrg getUnitOrg() {
-        return unitOrg;
-    }
-
-    public void setUnitOrg(UnitOrg unitOrg) {
-        this.unitOrg = unitOrg;
-    }
-
-    public Boolean getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(Boolean isActive) {
-        this.isActive = isActive;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
 }
