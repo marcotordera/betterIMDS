@@ -169,12 +169,13 @@ INSERT INTO public.personnel_requirements_override (override_id, trainee_uid, co
 ON CONFLICT (trainee_uid, course_id) DO NOTHING;
 
 -- -----------------------------------------------------------------------------
--- 7. UTM Admin Users
+-- 7. UTM Admin Users (Default password for all test admins: 'Password123!')
+-- BCrypt Hash: $2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi
 -- -----------------------------------------------------------------------------
-INSERT INTO public.admin_user (admin_id, username, email, full_name, role, is_active) VALUES
-(1, 'utm_mxs',  'elena.reyes@test.com',     'TSgt Elena Reyes',     'SQUADRON_UTM', true),
-(2, 'utm_amxs', 'nathan.drake@test.com',    'TSgt Nathan Drake',    'SQUADRON_UTM', true),
-(3, 'utm_wing', 'samantha.hayes@test.com', 'TSgt Samantha Hayes',  'WING_UTM',     true)
+INSERT INTO public.admin_user (admin_id, username, password_hash, email, full_name, role, is_active) VALUES
+(1, 'utm_mxs',  '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi', 'elena.reyes@test.com',     'TSgt Elena Reyes',     'SQUADRON_UTM', true),
+(2, 'utm_amxs', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi', 'nathan.drake@test.com',    'TSgt Nathan Drake',    'SQUADRON_UTM', true),
+(3, 'utm_wing', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVKIUi', 'samantha.hayes@test.com', 'TSgt Samantha Hayes',  'WING_UTM',     true)
 ON CONFLICT (admin_id) DO NOTHING;
 
 -- -----------------------------------------------------------------------------

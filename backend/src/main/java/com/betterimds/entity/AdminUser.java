@@ -21,6 +21,7 @@ public class AdminUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer adminId;
     private String username;
+    private String passwordHash;
     private String email;
     private String fullName;
     private String role = "SQUADRON_UTM";

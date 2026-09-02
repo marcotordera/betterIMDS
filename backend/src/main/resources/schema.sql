@@ -76,10 +76,11 @@ CREATE TABLE public.personnel_requirements_override (
     CONSTRAINT unique_person_course_override UNIQUE (trainee_uid, course_id)
 );
 
--- 7. UTM Admin Users
+-- 7. UTM Admin Users (Standard Password Authentication)
 CREATE TABLE public.admin_user (
     admin_id SERIAL PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
     email VARCHAR(100) NOT NULL,
     full_name VARCHAR(100) NOT NULL,
     role VARCHAR(50) NOT NULL DEFAULT 'SQUADRON_UTM',
