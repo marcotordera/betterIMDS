@@ -1,9 +1,8 @@
 package com.betterimds.service;
 
+import com.betterimds.context.DataStore;
 import com.betterimds.entity.Personnel;
 import com.betterimds.entity.Squadron;
-import com.betterimds.repository.PersonnelRepository;
-import com.betterimds.repository.SquadronRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
@@ -13,52 +12,62 @@ import java.util.Optional;
 @Service
 public class PersonnelService {
 
-    private final PersonnelRepository personnelRepository;
-    private final SquadronRepository squadronRepository;
+    private final DataStore db;
 
-    public PersonnelService(PersonnelRepository personnelRepository, SquadronRepository squadronRepository) {
-        this.personnelRepository = personnelRepository;
-        this.squadronRepository = squadronRepository;
+    public PersonnelService(DataStore db) {
+        this.db = db;
     }
 
     public List<Personnel> getPersonnelBySquadron(String squadronName) {
-        Squadron squadronProbe = new Squadron(null, squadronName);
-        Optional<Squadron> targetSquadron = squadronRepository.findOne(Example.of(squadronProbe));
+        if (squadronName != null && !squadronName.isBlank()) {
+            Squadron squadronProbe = new Squadron(null, squadronName);
+            Optional<Squadron> targetSquadron = db.getSquadrons().findOne(Example.of(squadronProbe));
 
-        if (targetSquadron.isPresent()) {
-            Personnel personProbe = new Personnel();
-            personProbe.setSquadron(targetSquadron.get());
-            return personnelRepository.findAll(Example.of(personProbe));
+            if (targetSquadron.isPresent()) {
+                Personnel personProbe = new Personnel();
+                personProbe.setSquadron(targetSquadron.get());
+                return db.getPersonnel().findAll(Example.of(personProbe));
+            }
         }
-
         return List.of();
     }
 
     public Optional<Personnel> getPersonnelByEdipi(String edipi) {
-        Personnel probe = new Personnel();
-        probe.setEdipi(edipi);
-        return personnelRepository.findOne(Example.of(probe));
+        if (edipi != null && !edipi.isBlank()) {
+            Personnel probe = new Personnel();
+            probe.setEdipi(edipi);
+            return db.getPersonnel().findOne(Example.of(probe));
+        }
+        return Optional.empty();
     }
 
     public List<Personnel> getActivePersonnel() {
         Personnel probe = new Personnel();
         probe.setIsActive(true);
-        return personnelRepository.findAll(Example.of(probe));
+        return db.getPersonnel().findAll(Example.of(probe));
     }
 
     public List<Personnel> getAllPersonnel() {
-        return personnelRepository.findAll();
+        return db.getPersonnel().findAll();
     }
 
     public Optional<Personnel> getPersonnelById(Integer id) {
-        return personnelRepository.findById(id);
+        if (id != null) {
+            return db.getPersonnel().findById(id);
+        }
+        return Optional.empty();
     }
 
     public Personnel savePersonnel(Personnel personnel) {
-        return personnelRepository.save(personnel);
+        if (personnel != null) {
+            return db.getPersonnel().save(personnel);
+        }
+        return null;
     }
 
     public void deletePersonnel(Integer id) {
-        personnelRepository.deleteById(id);
+        if (id != null) {
+            db.getPersonnel().deleteById(id);
+        }
     }
 }

@@ -20,17 +20,17 @@ ON CONFLICT (squadron_id) DO NOTHING;
 -- -----------------------------------------------------------------------------
 -- 2. Course Metadata (Mandatory Air Force & DoD Annual CBT Catalog)
 -- -----------------------------------------------------------------------------
-INSERT INTO public.course_metadata (course_id, course_code, course_title, frequency_months, grace_period_days) VALUES
-(1,  'CYBER-AWARE',  'DoD Cyber Awareness Challenge',             12, 30),
-(2,  'OPSEC-FUND',   'Operations Security (OPSEC) Fundamentals',  12, 30),
-(3,  'SAPR-ANNUAL',  'Sexual Assault Prevention & Response',      12, 30),
-(4,  'SUICIDE-PREV', 'Suicide Prevention & Resilience Training',  12, 30),
-(5,  'CBRN-DEFENSE', 'CBRN Defense & Chemical Warfare Awareness', 12, 30),
-(6,  'FORCE-PROT-1', 'Antiterrorism / Force Protection Level 1',  12, 30),
-(7,  'LOAC-GENEVA',  'Law of Armed Conflict (LOAC) & Geneva Conv',12, 30),
-(8,  'TCCC-TRAUMA',  'Tactical Combat Casualty Care (TCCC / SABC)',12, 30),
-(9,  'CUI-PRIVACY',  'Controlled Unclassified Info (CUI) & Privacy',12, 30),
-(10, 'NO-FEAR-ACT',  'Equal Opportunity & No FEAR Act Training',  24, 60)
+INSERT INTO public.course_metadata (course_id, course_code, course_title, description, frequency_months, grace_period_days) VALUES
+(1,  'CYBER-AWARE',  'DoD Cyber Awareness Challenge',             'Mandatory annual cybersecurity awareness, phishing defense, and NIPR/SIPR information security practices.', 12, 30),
+(2,  'OPSEC-FUND',   'Operations Security (OPSEC) Fundamentals',  'Critical information protection, social media vulnerability, and safeguarding PACAF mission profiles.',      12, 30),
+(3,  'SAPR-ANNUAL',  'Sexual Assault Prevention & Response',      'Annual Bystander intervention, reporting mechanisms, and military victim advocate resources.',              12, 30),
+(4,  'SUICIDE-PREV', 'Suicide Prevention & Resilience Training',  'ACE (Ask, Care, Escort) model training, mental wellness, and warrior resilience strategies.',                12, 30),
+(5,  'CBRN-DEFENSE', 'CBRN Defense & Chemical Warfare Awareness', 'Individual protective equipment (MOPP levels), mask fit procedures, and contamination avoidance.',        12, 30),
+(6,  'FORCE-PROT-1', 'Antiterrorism / Force Protection Level 1',  'Individual awareness of terrorist threats, active shooter response, and overseas security posture.',        12, 30),
+(7,  'LOAC-GENEVA',  'Law of Armed Conflict (LOAC) & Geneva Conv','Principles of military necessity, distinction, proportionality, and Geneva Convention protocols.',           12, 30),
+(8,  'TCCC-TRAUMA',  'Tactical Combat Casualty Care (TCCC / SABC)','Tourniquet application, airway management, and combat casualty triage fundamentals.',                       12, 30),
+(9,  'CUI-PRIVACY',  'Controlled Unclassified Info (CUI) & Privacy','Handling CUI marking standards, Freedom of Information Act (FOIA), and PII safeguarding regulations.',       12, 30),
+(10, 'NO-FEAR-ACT',  'Equal Opportunity & No FEAR Act Training',  'Workplace harassment prevention, whistleblower protections, and anti-discrimination policies.',             24, 60)
 ON CONFLICT (course_id) DO NOTHING;
 
 -- -----------------------------------------------------------------------------

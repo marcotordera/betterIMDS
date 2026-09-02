@@ -27,6 +27,7 @@ CREATE TABLE public.course_metadata (
     course_id SERIAL PRIMARY KEY,
     course_code VARCHAR(20) UNIQUE NOT NULL, 
     course_title VARCHAR(150) NOT NULL,
+    description TEXT,
     frequency_months INT NOT NULL,           
     grace_period_days INT DEFAULT 30         
 );

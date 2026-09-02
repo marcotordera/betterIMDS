@@ -21,6 +21,7 @@ public class CourseMetadata {
     private Integer courseId;
     private String courseCode;
     private String courseTitle;
+    private String description;
     private Integer frequencyMonths;
     private Integer gracePeriodDays = 30;
 }
