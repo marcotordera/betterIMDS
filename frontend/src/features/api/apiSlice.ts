@@ -8,7 +8,7 @@ export interface ApiResponse {
   timestamp: string;
 }
 
-interface ApiState {
+export interface ApiState {
   data: ApiResponse | null;
   loading: boolean;
   error: string | null;

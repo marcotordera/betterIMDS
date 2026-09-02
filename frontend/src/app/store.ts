@@ -1,8 +1,10 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import apiReducer from '../features/api/apiSlice';
+import utmReducer from '../features/dashboard/state/utmSlice';
 
 export const rootReducer = combineReducers({
   api: apiReducer,
+  utm: utmReducer,
 });
 
 export const store = configureStore({
