@@ -1,12 +1,31 @@
-import { Box, Typography, Select, MenuItem } from '@mui/material';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { setSelectedSquadron } from '../../dashboard/state/utmSlice';
+import { Box, Typography, Select, MenuItem, Chip } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { setSelectedSquadron, selectSelectedSquadron } from '@/features/dashboard';
 
 const SQUADRONS = ['35 MXS', '35 AMXS', '35 CES', '35 FSS', '35 MXG', '35 FW'];
 
 export default function SquadronSelector() {
   const dispatch = useAppDispatch();
-  const selectedSquadron = useAppSelector((state) => state.utm.selectedSquadron);
+  const selectedSquadron = useAppSelector(selectSelectedSquadron);
+  const currentUser = useAppSelector((state) => state.auth.currentUser);
+
+  const isWingUtm = currentUser?.role === 'WING_UTM';
+
+  if (!isWingUtm) {
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        <Typography variant="body2" color="text.secondary" fontWeight={500}>
+          Squadron:
+        </Typography>
+        <Chip
+          label={currentUser?.defaultSquadron || selectedSquadron}
+          size="small"
+          variant="outlined"
+          sx={{ fontWeight: 700, borderColor: 'divider' }}
+        />
+      </Box>
+    );
+  }
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

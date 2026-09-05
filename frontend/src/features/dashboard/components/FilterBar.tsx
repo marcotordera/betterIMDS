@@ -1,79 +1,50 @@
-import { Paper, TextField, InputAdornment, Box, Chip } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import { useAppDispatch, useAppSelector } from '../../../app/hooks';
-import { setSearchQuery, setStatusFilter } from '../state/utmSlice';
+import { Box, Chip, Stack, Typography } from '@mui/material';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import { useAppDispatch, useAppSelector } from '@/app/hooks';
+import { setStatusFilter, selectStatusFilter } from '../dashboardSlice';
 
-interface Props {
-  overdueCount: number;
-  expiringCount: number;
-  waiverCount: number;
-}
+const FILTER_OPTIONS = [
+  { value: 'ALL', label: 'All Statuses' },
+  { value: 'OVERDUE', label: 'Overdue Only' },
+  { value: 'EXPIRING', label: 'Expiring Soon' },
+  { value: 'WAIVER', label: 'Waivers / Exemptions' },
+];
 
-export default function FilterBar({ overdueCount, expiringCount, waiverCount }: Props) {
+export default function FilterBar() {
   const dispatch = useAppDispatch();
-  const searchQuery = useAppSelector((state) => state.utm.searchQuery);
-  const statusFilter = useAppSelector((state) => state.utm.statusFilter);
+  const statusFilter = useAppSelector(selectStatusFilter);
 
   return (
-    <Paper
-      variant="outlined"
-      sx={{
-        p: 2,
-        mb: 3,
-        borderRadius: 2,
-        display: 'flex',
-        gap: 2,
-        flexWrap: 'wrap',
-        alignItems: 'center',
-      }}
-    >
-      {/* Search by Name / EDIPI */}
-      <TextField
-        placeholder="Search by Airman Name or EDIPI..."
-        size="small"
-        value={searchQuery}
-        onChange={(e) => dispatch(setSearchQuery(e.target.value))}
-        sx={{ minWidth: 280 }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon fontSize="small" color="action" />
-            </InputAdornment>
-          ),
-        }}
-      />
-
-      {/* Filter Status Chips */}
-      <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-        <Chip
-          label="All Airmen"
-          clickable
-          color={statusFilter === 'ALL' ? 'primary' : 'default'}
-          onClick={() => dispatch(setStatusFilter('ALL'))}
-          size="small"
-        />
-        <Chip
-          label={`Overdue (${overdueCount})`}
-          clickable
-          color={statusFilter === 'OVERDUE' ? 'error' : 'default'}
-          onClick={() => dispatch(setStatusFilter('OVERDUE'))}
-          size="small"
-        />
-        <Chip
-          label={`Expiring (${expiringCount})`}
-          clickable
-          color={statusFilter === 'EXPIRING' ? 'warning' : 'default'}
-          onClick={() => dispatch(setStatusFilter('EXPIRING'))}
-          size="small"
-        />
-        <Chip
-          label={`Waivers (${waiverCount})`}
-          clickable
-          color={statusFilter === 'WAIVER' ? 'secondary' : 'default'}
-          onClick={() => dispatch(setStatusFilter('WAIVER'))}
-          size="small"
-        />
+    <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75, color: 'text.secondary' }}>
+        <FilterListIcon fontSize="small" />
+        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+          Filter Status:
+        </Typography>
       </Box>
-    </Paper>
+
+      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+        {FILTER_OPTIONS.map((opt) => {
+          const isSelected = statusFilter === opt.value;
+          return (
+            <Chip
+              key={opt.value}
+              label={opt.label}
+              clickable
+              color={isSelected ? 'primary' : 'default'}
+              variant={isSelected ? 'filled' : 'outlined'}
+              size="small"
+              onClick={() =>
+                dispatch(setStatusFilter(opt.value as 'ALL' | 'OVERDUE' | 'EXPIRING' | 'WAIVER'))
+              }
+              sx={{
+                fontWeight: isSelected ? 700 : 500,
+                fontSize: '0.8rem',
+              }}
+            />
+          );
+        })}
+      </Stack>
+    </Box>
   );
 }

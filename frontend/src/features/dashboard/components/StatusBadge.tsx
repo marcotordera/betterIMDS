@@ -1,81 +1,79 @@
-import { Chip, Tooltip } from '@mui/material';
+import { Box, Chip, Tooltip } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import ShieldIcon from '@mui/icons-material/Shield';
-import { StatusDetail } from '../../../types/utm';
+import { StatusDetail } from '@/types/utm';
 
 interface Props {
   detail?: StatusDetail;
-  onClick?: () => void;
+  onClick: () => void;
 }
 
 export default function StatusBadge({ detail, onClick }: Props) {
   if (!detail) {
-    return <Chip label="N/A" size="small" variant="outlined" sx={{ opacity: 0.5 }} />;
+    return (
+      <Chip
+        label="N/A"
+        size="small"
+        variant="outlined"
+        onClick={onClick}
+        sx={{ cursor: 'pointer', opacity: 0.6 }}
+      />
+    );
   }
 
   const { status, expirationDate, reason } = detail;
 
+  let label: string = status;
+  let color: 'success' | 'warning' | 'error' | 'secondary' = 'error';
+  let icon = <ErrorOutlineIcon fontSize="small" />;
+  let tooltipText = 'Status: Overdue. Click to log completion or grant exemption.';
+
   if (status === 'VALID') {
-    return (
-      <Tooltip title={`Expires: ${expirationDate || 'N/A'}`}>
-        <Chip
-          icon={<CheckCircleIcon sx={{ fontSize: 16 }} />}
-          label="Valid"
-          size="small"
-          color="success"
-          onClick={onClick}
-          sx={{ fontWeight: 600, cursor: onClick ? 'pointer' : 'default' }}
-        />
-      </Tooltip>
-    );
+    label = 'Valid';
+    color = 'success';
+    icon = <CheckCircleIcon fontSize="small" />;
+    tooltipText = expirationDate ? `Valid until: ${expirationDate}` : 'Training Valid';
+  } else if (status === 'EXPIRING') {
+    label = 'Expiring';
+    color = 'warning';
+    icon = <WarningAmberIcon fontSize="small" />;
+    tooltipText = expirationDate ? `Expires soon: ${expirationDate}` : 'Expiring soon';
+  } else if (status === 'WAIVER') {
+    label = 'Exempt';
+    color = 'secondary';
+    icon = <ShieldIcon fontSize="small" />;
+    tooltipText = reason ? `Exemption / Waiver: ${reason}` : 'Exemption on file';
   }
 
-  if (status === 'EXPIRING') {
-    return (
-      <Tooltip title={`Expiring Soon: ${expirationDate || 'Within 30 days'}`}>
+  return (
+    <Tooltip title={tooltipText} arrow placement="top">
+      <Box component="span" sx={{ display: 'inline-block' }}>
         <Chip
-          icon={<WarningAmberIcon sx={{ fontSize: 16 }} />}
-          label="Expiring"
+          label={label}
+          color={color}
           size="small"
-          color="warning"
+          icon={icon}
           onClick={onClick}
-          sx={{ fontWeight: 600, cursor: onClick ? 'pointer' : 'default' }}
+          sx={{
+            cursor: 'pointer',
+            fontWeight: 700,
+            fontSize: '0.75rem',
+            minWidth: 85,
+            justifyContent: 'center',
+            '& .MuiChip-label': {
+              px: 0.75,
+            },
+            '&:hover': {
+              filter: 'brightness(1.1)',
+              transform: 'scale(1.03)',
+              boxShadow: 1,
+            },
+            transition: 'all 0.15s ease',
+          }}
         />
-      </Tooltip>
-    );
-  }
-
-  if (status === 'OVERDUE') {
-    return (
-      <Tooltip title="OVERDUE! Click to log completion">
-        <Chip
-          icon={<ErrorOutlineIcon sx={{ fontSize: 16 }} />}
-          label="OVERDUE"
-          size="small"
-          color="error"
-          onClick={onClick}
-          sx={{ fontWeight: 700, cursor: onClick ? 'pointer' : 'default' }}
-        />
-      </Tooltip>
-    );
-  }
-
-  if (status === 'WAIVER') {
-    return (
-      <Tooltip title={`Waiver/Exemption: ${reason || 'Approved profile'}`}>
-        <Chip
-          icon={<ShieldIcon sx={{ fontSize: 16 }} />}
-          label="WAIVER"
-          size="small"
-          color="secondary"
-          onClick={onClick}
-          sx={{ fontWeight: 600, cursor: onClick ? 'pointer' : 'default' }}
-        />
-      </Tooltip>
-    );
-  }
-
-  return <Chip label={status} size="small" />;
+      </Box>
+    </Tooltip>
+  );
 }

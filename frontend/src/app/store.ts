@@ -1,10 +1,10 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import apiReducer from '../features/api/apiSlice';
-import utmReducer from '../features/dashboard/state/utmSlice';
+import dashboardReducer from '@/features/dashboard/dashboardSlice';
+import authReducer from '@/features/auth/authSlice';
 
 export const rootReducer = combineReducers({
-  api: apiReducer,
-  utm: utmReducer,
+  dashboard: dashboardReducer,
+  auth: authReducer,
 });
 
 export const store = configureStore({

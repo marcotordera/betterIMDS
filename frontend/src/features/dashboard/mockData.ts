@@ -1,4 +1,4 @@
-import { Course, AirmanMatrixRow, DashboardMetrics } from '../../../types/utm';
+import { Course, AirmanMatrixRow, DashboardMetrics } from '@/types/utm';
 
 // Map squadron name to numeric ID
 export const SQUADRON_MAP: Record<string, number> = {

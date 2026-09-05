@@ -1,15 +1,61 @@
+import React from 'react';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import PeopleIcon from '@mui/icons-material/People';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import { DashboardMetrics } from '../../../types/utm';
+import { useAppSelector } from '@/app/hooks';
+import { selectDashboardMetrics } from '../dashboardSlice';
 
-interface Props {
-  metrics: DashboardMetrics;
+interface MetricItemProps {
+  title: string;
+  value: React.ReactNode;
+  icon: React.ReactNode;
+  colorScheme: 'success' | 'primary' | 'error' | 'warning';
+  isAlert?: boolean;
 }
 
-export default function MetricCards({ metrics }: Props) {
+function MetricCardItem({ title, value, icon, colorScheme, isAlert }: MetricItemProps) {
+  return (
+    <Card
+      variant="outlined"
+      sx={{
+        borderRadius: 2,
+        borderColor: isAlert ? `${colorScheme}.main` : 'divider',
+      }}
+    >
+      <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Box>
+          <Typography variant="body2" color="text.secondary" fontWeight={500}>
+            {title}
+          </Typography>
+          <Typography
+            variant="h4"
+            fontWeight={700}
+            color={colorScheme !== 'primary' ? `${colorScheme}.main` : 'text.primary'}
+          >
+            {value}
+          </Typography>
+        </Box>
+        <Box
+          sx={{
+            p: 1.5,
+            borderRadius: 2,
+            bgcolor: `${colorScheme}.light`,
+            color: `${colorScheme}.dark`,
+            opacity: 0.85,
+          }}
+        >
+          {icon}
+        </Box>
+      </CardContent>
+    </Card>
+  );
+}
+
+export default function MetricCards() {
+  const metrics = useAppSelector(selectDashboardMetrics);
+
   return (
     <Box
       sx={{
@@ -19,73 +65,41 @@ export default function MetricCards({ metrics }: Props) {
         mb: 4,
       }}
     >
-      {/* 1. Overall Readiness */}
-      <Card variant="outlined" sx={{ borderRadius: 2 }}>
-        <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Box>
-            <Typography variant="body2" color="text.secondary" fontWeight={500}>
-              Overall Readiness
-            </Typography>
-            <Typography variant="h4" fontWeight={700} color="success.main">
-              {metrics.readinessPercentage}%
-            </Typography>
-          </Box>
-          <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'success.light', color: 'success.dark', opacity: 0.85 }}>
-            <TrendingUpIcon fontSize="large" />
-          </Box>
-        </CardContent>
-      </Card>
+      <MetricCardItem
+        title="Overall Readiness"
+        value={`${metrics.readinessPercentage}%`}
+        icon={<TrendingUpIcon fontSize="large" />}
+        colorScheme="success"
+      />
 
-      {/* 2. Total Roster */}
-      <Card variant="outlined" sx={{ borderRadius: 2 }}>
-        <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Box>
-            <Typography variant="body2" color="text.secondary" fontWeight={500}>
-              Total Roster
+      <MetricCardItem
+        title="Total Roster"
+        value={
+          <>
+            {metrics.totalAirmen}{' '}
+            <Typography component="span" variant="h6" color="text.secondary">
+              Airmen
             </Typography>
-            <Typography variant="h4" fontWeight={700}>
-              {metrics.totalAirmen} <Typography component="span" variant="h6" color="text.secondary">Airmen</Typography>
-            </Typography>
-          </Box>
-          <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'primary.light', color: 'primary.dark', opacity: 0.85 }}>
-            <PeopleIcon fontSize="large" />
-          </Box>
-        </CardContent>
-      </Card>
+          </>
+        }
+        icon={<PeopleIcon fontSize="large" />}
+        colorScheme="primary"
+      />
 
-      {/* 3. Overdue CBTs */}
-      <Card variant="outlined" sx={{ borderRadius: 2, borderColor: metrics.overdueCount > 0 ? 'error.main' : 'divider' }}>
-        <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Box>
-            <Typography variant="body2" color="text.secondary" fontWeight={500}>
-              Overdue CBTs
-            </Typography>
-            <Typography variant="h4" fontWeight={700} color={metrics.overdueCount > 0 ? 'error.main' : 'text.primary'}>
-              {metrics.overdueCount}
-            </Typography>
-          </Box>
-          <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'error.light', color: 'error.dark', opacity: 0.85 }}>
-            <ErrorOutlineIcon fontSize="large" />
-          </Box>
-        </CardContent>
-      </Card>
+      <MetricCardItem
+        title="Overdue CBTs"
+        value={metrics.overdueCount}
+        icon={<ErrorOutlineIcon fontSize="large" />}
+        colorScheme="error"
+        isAlert={metrics.overdueCount > 0}
+      />
 
-      {/* 4. Expiring in 30 Days */}
-      <Card variant="outlined" sx={{ borderRadius: 2 }}>
-        <CardContent sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Box>
-            <Typography variant="body2" color="text.secondary" fontWeight={500}>
-              Expiring (30 Days)
-            </Typography>
-            <Typography variant="h4" fontWeight={700} color="warning.main">
-              {metrics.expiringCount}
-            </Typography>
-          </Box>
-          <Box sx={{ p: 1.5, borderRadius: 2, bgcolor: 'warning.light', color: 'warning.dark', opacity: 0.85 }}>
-            <WarningAmberIcon fontSize="large" />
-          </Box>
-        </CardContent>
-      </Card>
+      <MetricCardItem
+        title="Expiring (30 Days)"
+        value={metrics.expiringCount}
+        icon={<WarningAmberIcon fontSize="large" />}
+        colorScheme="warning"
+      />
     </Box>
   );
 }
