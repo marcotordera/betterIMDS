@@ -27,8 +27,8 @@ import {
   clearSelection,
   selectActiveBulkModal,
   selectSelectedAirmen,
-} from '../dashboardSlice';
-import { COURSES } from '../mockData';
+} from '../../dashboardSlice';
+import { COURSES } from '../../mockData';
 
 export default function BulkActionModal() {
   const dispatch = useAppDispatch();

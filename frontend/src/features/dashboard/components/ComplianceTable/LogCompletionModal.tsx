@@ -26,8 +26,8 @@ import {
   invalidateCompletion,
   selectActiveCellModal,
   selectRoster,
-} from '../dashboardSlice';
-import { COURSES } from '../mockData';
+} from '../../dashboardSlice';
+import { COURSES } from '../../mockData';
 
 export default function LogCompletionModal() {
   const dispatch = useAppDispatch();

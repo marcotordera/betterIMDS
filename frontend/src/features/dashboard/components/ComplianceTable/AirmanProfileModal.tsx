@@ -14,11 +14,8 @@ import {
   TableCell,
   Divider,
   Chip,
-  IconButton,
 } from '@mui/material';
 import PrintIcon from '@mui/icons-material/Print';
-import CloseIcon from '@mui/icons-material/Close';
-import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import {
@@ -26,8 +23,8 @@ import {
   selectActiveAirmanProfileModal,
   selectActiveAirmanRow,
   selectSelectedSquadron,
-} from '../dashboardSlice';
-import { COURSES } from '../mockData';
+} from '../../dashboardSlice';
+import { COURSES } from '../../mockData';
 import StatusBadge from './StatusBadge';
 
 export default function AirmanProfileModal() {
@@ -70,31 +67,13 @@ export default function AirmanProfileModal() {
           borderColor: 'divider',
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <MilitaryTechIcon color="primary" fontSize="large" />
-          <Box>
-            <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
-              Individual Training Record
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              BetterIMDS • AF Form 55 Training Summary • {selectedSquadron}
-            </Typography>
-          </Box>
-        </Box>
-
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }} className="no-print">
-          <Button
-            variant="outlined"
-            size="small"
-            startIcon={<PrintIcon />}
-            onClick={() => window.print()}
-            sx={{ fontWeight: 600, textTransform: 'none' }}
-          >
-            Print Record
-          </Button>
-          <IconButton onClick={() => dispatch(closeAirmanProfileModal())} size="small" aria-label="close">
-            <CloseIcon fontSize="small" />
-          </IconButton>
+        <Box>
+          <Typography variant="h6" sx={{ fontWeight: 700, lineHeight: 1.2 }}>
+            Individual Training Record
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            BetterIMDS • AF Form 55 Training Summary • {selectedSquadron}
+          </Typography>
         </Box>
       </DialogTitle>
 

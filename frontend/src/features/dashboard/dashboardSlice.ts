@@ -1,7 +1,7 @@
 import { createSlice, createSelector, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '@/app/store';
-import { AirmanMatrixRow, ComplianceStatus } from '@/types/utm';
-import { INITIAL_ROSTER, SQUADRON_MAP, calculateMetrics } from './mockData';
+import { Airman, AirmanMatrixRow, ComplianceStatus, StatusDetail } from '@/types/utm';
+import { INITIAL_ROSTER, SQUADRON_MAP, COURSES, calculateMetrics } from './mockData';
 
 export type BulkActionType = 'VALID' | 'WAIVER' | 'OVERDUE';
 export type SortOrder = 'asc' | 'desc';
@@ -33,6 +33,7 @@ export interface DashboardState {
   activeCellModal: ActiveCellModal;
   activeBulkModal: ActiveBulkModal;
   activeAirmanProfileModal: ActiveAirmanProfileModal;
+  isAddAirmanModalOpen: boolean;
 }
 
 const initialState: DashboardState = {
@@ -46,6 +47,7 @@ const initialState: DashboardState = {
   activeCellModal: { open: false },
   activeBulkModal: { open: false, actionType: null },
   activeAirmanProfileModal: { open: false },
+  isAddAirmanModalOpen: false,
 };
 
 export const RANK_ORDER: Record<string, number> = {
@@ -221,6 +223,66 @@ export const dashboardSlice = createSlice({
       state.selectedAirmanIds = [];
       state.activeBulkModal = { open: false, actionType: null };
     },
+    removeSelectedAirmen: (state) => {
+      const selectedSet = new Set(state.selectedAirmanIds);
+      state.roster = state.roster.filter((row) => !selectedSet.has(row.airman.uid));
+      state.selectedAirmanIds = [];
+    },
+    removeAirmen: (state, action: PayloadAction<number[]>) => {
+      const idsToRemove = new Set(action.payload);
+      state.roster = state.roster.filter((row) => !idsToRemove.has(row.airman.uid));
+      state.selectedAirmanIds = state.selectedAirmanIds.filter((id) => !idsToRemove.has(id));
+    },
+    openAddAirmanModal: (state) => {
+      state.isAddAirmanModalOpen = true;
+    },
+    closeAddAirmanModal: (state) => {
+      state.isAddAirmanModalOpen = false;
+    },
+    addAirman: (
+      state,
+      action: PayloadAction<{ airman: Omit<Airman, 'uid'>; initialStatus?: ComplianceStatus }>
+    ) => {
+      const nextUid = state.roster.reduce((max, r) => Math.max(max, r.airman.uid), 0) + 1;
+      const status = action.payload.initialStatus || 'EXPIRING';
+      const coursesMap: Record<string, StatusDetail> = {};
+
+      COURSES.forEach((course) => {
+        if (status === 'EXPIRING') {
+          const expDate = new Date();
+          expDate.setDate(expDate.getDate() + 30);
+          const completedDate = new Date();
+          completedDate.setMonth(completedDate.getMonth() - (course.frequencyMonths - 1));
+          coursesMap[course.courseCode] = {
+            status: 'EXPIRING',
+            completedDate: completedDate.toISOString().split('T')[0],
+            expirationDate: expDate.toISOString().split('T')[0],
+          };
+        } else if (status === 'VALID') {
+          const today = new Date().toISOString().split('T')[0];
+          const nextYear = new Date();
+          nextYear.setFullYear(nextYear.getFullYear() + 1);
+          coursesMap[course.courseCode] = {
+            status: 'VALID',
+            completedDate: today,
+            expirationDate: nextYear.toISOString().split('T')[0],
+          };
+        } else {
+          coursesMap[course.courseCode] = {
+            status: 'OVERDUE',
+          };
+        }
+      });
+
+      state.roster.unshift({
+        airman: {
+          ...action.payload.airman,
+          uid: nextUid,
+        },
+        courses: coursesMap,
+      });
+      state.isAddAirmanModalOpen = false;
+    },
   },
 });
 
@@ -238,12 +300,17 @@ export const {
   closeBulkModal,
   openAirmanProfileModal,
   closeAirmanProfileModal,
+  openAddAirmanModal,
+  closeAddAirmanModal,
+  addAirman,
   logCompletion,
   grantExemption,
   invalidateCompletion,
   bulkLogCompletion,
   bulkGrantExemption,
   bulkInvalidateCompletion,
+  removeSelectedAirmen,
+  removeAirmen,
 } = dashboardSlice.actions;
 
 // =============================================================================
@@ -260,6 +327,7 @@ export const selectSelectedAirmanIds = (state: RootState) => state.dashboard.sel
 export const selectActiveCellModal = (state: RootState) => state.dashboard.activeCellModal;
 export const selectActiveBulkModal = (state: RootState) => state.dashboard.activeBulkModal;
 export const selectActiveAirmanProfileModal = (state: RootState) => state.dashboard.activeAirmanProfileModal;
+export const selectIsAddAirmanModalOpen = (state: RootState) => state.dashboard.isAddAirmanModalOpen;
 export const selectDarkMode = (state: RootState) => state.dashboard.darkMode;
 
 export const selectSquadronRoster = createSelector(
