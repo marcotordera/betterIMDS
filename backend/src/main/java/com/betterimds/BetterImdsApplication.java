@@ -6,6 +6,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 
 import java.awt.Desktop;
+import java.awt.GraphicsEnvironment;
 import java.net.URI;
 
 @SpringBootApplication
@@ -17,14 +18,14 @@ public class BetterImdsApplication {
 
     @EventListener(ApplicationReadyEvent.class)
     public void openSwaggerUI() {
-        System.setProperty("java.awt.headless", "false");
-        try {
-            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                Desktop.getDesktop().browse(new URI("http://localhost:8080/swagger-ui.html"));
-            } else {
-                Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler http://localhost:8080/swagger-ui.html");
+        // Skip browser launch in headless / cloud / Docker container environments
+        if (!GraphicsEnvironment.isHeadless() && Desktop.isDesktopSupported()) {
+            try {
+                if (Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                    Desktop.getDesktop().browse(new URI("http://localhost:8080/swagger-ui.html"));
+                }
+            } catch (Exception ignored) {
             }
-        } catch (Exception ignored) {
         }
     }
 }
