@@ -241,8 +241,16 @@ export function calculateMetrics(roster: AirmanMatrixRow[]): DashboardMetrics {
   let expiringCount = 0;
   let waiverCount = 0;
 
+  const monitoredCourseCodes = COURSES.map((c) => c.courseCode);
+
   roster.forEach((row) => {
-    Object.values(row.courses).forEach((detail) => {
+    monitoredCourseCodes.forEach((code) => {
+      const detail = row.courses[code];
+      if (!detail) {
+        totalCells++;
+        overdueCount++;
+        return;
+      }
       totalCells++;
       if (detail.status === 'VALID') validCells++;
       else if (detail.status === 'OVERDUE') overdueCount++;
@@ -254,7 +262,8 @@ export function calculateMetrics(roster: AirmanMatrixRow[]): DashboardMetrics {
     });
   });
 
-  const readinessPercentage = totalCells > 0 ? Math.round((validCells / totalCells) * 1000) / 10 : 100;
+  const readinessPercentage =
+    totalCells > 0 ? Math.round((validCells / totalCells) * 1000) / 10 : 100;
 
   return {
     readinessPercentage,

@@ -358,7 +358,7 @@ export const selectFilteredRoster = createSelector(
   (squadronRoster, statusFilter, sortField, sortOrder) => {
     const filtered = squadronRoster.filter((row) => {
       if (statusFilter === 'ALL') return true;
-      return Object.values(row.courses).some((detail) => detail.status === statusFilter);
+      return COURSES.some((c) => row.courses[c.courseCode]?.status === statusFilter);
     });
 
     const modifier = sortOrder === 'asc' ? 1 : -1;

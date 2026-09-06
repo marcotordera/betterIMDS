@@ -24,13 +24,9 @@ INSERT INTO public.course_metadata (course_id, course_code, course_title, descri
 (1,  'CYBER-AWARE',  'DoD Cyber Awareness Challenge',             'Mandatory annual cybersecurity awareness, phishing defense, and NIPR/SIPR information security practices.', 12, 30),
 (2,  'OPSEC-FUND',   'Operations Security (OPSEC) Fundamentals',  'Critical information protection, social media vulnerability, and safeguarding PACAF mission profiles.',      12, 30),
 (3,  'SAPR-ANNUAL',  'Sexual Assault Prevention & Response',      'Annual Bystander intervention, reporting mechanisms, and military victim advocate resources.',              12, 30),
-(4,  'SUICIDE-PREV', 'Suicide Prevention & Resilience Training',  'ACE (Ask, Care, Escort) model training, mental wellness, and warrior resilience strategies.',                12, 30),
-(5,  'CBRN-DEFENSE', 'CBRN Defense & Chemical Warfare Awareness', 'Individual protective equipment (MOPP levels), mask fit procedures, and contamination avoidance.',        12, 30),
-(6,  'FORCE-PROT-1', 'Antiterrorism / Force Protection Level 1',  'Individual awareness of terrorist threats, active shooter response, and overseas security posture.',        12, 30),
-(7,  'LOAC-GENEVA',  'Law of Armed Conflict (LOAC) & Geneva Conv','Principles of military necessity, distinction, proportionality, and Geneva Convention protocols.',           12, 30),
-(8,  'TCCC-TRAUMA',  'Tactical Combat Casualty Care (TCCC / SABC)','Tourniquet application, airway management, and combat casualty triage fundamentals.',                       12, 30),
-(9,  'CUI-PRIVACY',  'Controlled Unclassified Info (CUI) & Privacy','Handling CUI marking standards, Freedom of Information Act (FOIA), and PII safeguarding regulations.',       12, 30),
-(10, 'NO-FEAR-ACT',  'Equal Opportunity & No FEAR Act Training',  'Workplace harassment prevention, whistleblower protections, and anti-discrimination policies.',             24, 60)
+(4,  'CBRN-DEFENSE', 'CBRN Defense & Chemical Warfare Awareness', 'Individual protective equipment (MOPP levels), mask fit procedures, and contamination avoidance.',        12, 30),
+(5,  'SUICIDE-PREV', 'Suicide Prevention & Resilience Training',  'ACE (Ask, Care, Escort) model training, mental wellness, and warrior resilience strategies.',                12, 30),
+(6,  'TCCC-TRAUMA',  'Tactical Combat Casualty Care (TCCC / SABC)','Tourniquet application, airway management, and combat casualty triage fundamentals.',                       12, 30)
 ON CONFLICT (course_id) DO NOTHING;
 
 -- -----------------------------------------------------------------------------
@@ -60,11 +56,11 @@ INSERT INTO public.personnel (uid, edipi, first_name, last_name, rank, email, sq
 -- 35 FSS (Squadron 4)
 (15, '1035000015', 'Rachel',    'Adams',      'TSgt',  'rachel.adams@test.com',    4, true),
 
--- 35 MXG Staff (Squadron 5)
+-- 35 MXG (Squadron 5)
 (16, '1035000016', 'Kenji',     'Takahashi',  'SMSgt', 'kenji.takahashi@test.com', 5, true),
 (17, '1035000017', 'Samantha',  'Hayes',      'TSgt',  'samantha.hayes@test.com',  5, true),
 
--- 35 FW Staff (Squadron 6)
+-- 35 FW (Squadron 6)
 (18, '1035000018', 'Alexander', 'Cross',      'Col',   'alexander.cross@test.com', 6, true)
 ON CONFLICT (uid) DO NOTHING;
 
@@ -73,40 +69,17 @@ ON CONFLICT (uid) DO NOTHING;
 -- -----------------------------------------------------------------------------
 INSERT INTO public.unit_requirements (requirement_id, squadron_id, course_id) VALUES
 -- 35 MXS Annual CBTs
-(1,  1, 1),   -- CYBER-AWARE
-(2,  1, 2),   -- OPSEC-FUND
-(3,  1, 3),   -- SAPR-ANNUAL
-(4,  1, 4),   -- SUICIDE-PREV
-(5,  1, 5),   -- CBRN-DEFENSE
-(6,  1, 6),   -- FORCE-PROT-1
-(7,  1, 7),   -- LOAC-GENEVA
-(8,  1, 8),   -- TCCC-TRAUMA
-
+(1,  1, 1), (2,  1, 2), (3,  1, 3), (4,  1, 4), (5,  1, 5), (6,  1, 6),
 -- 35 AMXS Annual CBTs
-(9,  2, 1),   -- CYBER-AWARE
-(10, 2, 2),   -- OPSEC-FUND
-(11, 2, 3),   -- SAPR-ANNUAL
-(12, 2, 4),   -- SUICIDE-PREV
-(13, 2, 5),   -- CBRN-DEFENSE
-(14, 2, 6),   -- FORCE-PROT-1
-(15, 2, 7),   -- LOAC-GENEVA
-(16, 2, 8),   -- TCCC-TRAUMA
-
+(7,  2, 1), (8,  2, 2), (9,  2, 3), (10, 2, 4), (11, 2, 5), (12, 2, 6),
 -- 35 CES Annual CBTs
-(17, 3, 1),
-(18, 3, 2),
-(19, 3, 3),
-(20, 3, 4),
-(21, 3, 6),
-(22, 3, 8),
-
+(13, 3, 1), (14, 3, 2), (15, 3, 3), (16, 3, 4), (17, 3, 5), (18, 3, 6),
 -- 35 FSS Annual CBTs
-(23, 4, 1),
-(24, 4, 2),
-(25, 4, 3),
-(26, 4, 4),
-(27, 4, 6),
-(28, 4, 9)
+(19, 4, 1), (20, 4, 2), (21, 4, 3), (22, 4, 4), (23, 4, 5), (24, 4, 6),
+-- 35 MXG Annual CBTs
+(25, 5, 1), (26, 5, 2), (27, 5, 3), (28, 5, 4), (29, 5, 5), (30, 5, 6),
+-- 35 FW Annual CBTs
+(31, 6, 1), (32, 6, 2), (33, 6, 3), (34, 6, 4), (35, 6, 5), (36, 6, 6)
 ON CONFLICT (squadron_id, course_id) DO NOTHING;
 
 -- -----------------------------------------------------------------------------
@@ -163,9 +136,9 @@ ON CONFLICT (log_id) DO NOTHING;
 -- -----------------------------------------------------------------------------
 INSERT INTO public.personnel_requirements_override (override_id, trainee_uid, course_id, override_type, reason) VALUES
 -- Chloe Bennett (SrA - 35 MXS) has medical profile waiver for CBRN
-(1, 5, 5, 'WAIVER',    'Medical profile - respiratory mask fit waiver through Q4'),
+(1, 5, 4, 'WAIVER', 'Medical profile - respiratory mask fit waiver through Q4'),
 -- Darius Washington (SrA - 35 MXS) has temporary deployment exemption
-(2, 6, 8, 'EXEMPTION', 'TDY to Kadena AB supporting Cope North exercise')
+(2, 6, 6, 'WAIVER', 'TDY to Kadena AB supporting Cope North exercise')
 ON CONFLICT (trainee_uid, course_id) DO NOTHING;
 
 -- -----------------------------------------------------------------------------
