@@ -16,6 +16,7 @@ public class WebCorsConfig implements WebMvcConfigurer {
     private String allowedOrigins;
 
     @Override
+    @SuppressWarnings("null")
     public void addCorsMappings(@NonNull CorsRegistry registry) {
         List<String> originsList = new ArrayList<>();
         if (allowedOrigins != null) {
