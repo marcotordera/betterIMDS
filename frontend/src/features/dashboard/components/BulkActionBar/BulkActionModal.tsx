@@ -29,6 +29,7 @@ import {
   selectSelectedAirmen,
 } from '../../dashboardSlice';
 import { COURSES } from '../../mockData';
+import { bulkTrainingActionApi } from '@/api/client';
 
 export default function BulkActionModal() {
   const dispatch = useAppDispatch();
@@ -55,11 +56,28 @@ export default function BulkActionModal() {
         : [targetCourse];
 
     if (actionType === 'VALID') {
+      bulkTrainingActionApi({
+        airmanIds,
+        courseCodes,
+        actionType: 'VALID',
+        completedDate,
+      }).catch(() => {});
       dispatch(bulkLogCompletion({ airmanIds, courseCodes, completedDate }));
     } else if (actionType === 'WAIVER') {
       const reason = exemptionReason.trim() || 'Approved Bulk Exemption / Waiver';
+      bulkTrainingActionApi({
+        airmanIds,
+        courseCodes,
+        actionType: 'WAIVER',
+        reason,
+      }).catch(() => {});
       dispatch(bulkGrantExemption({ airmanIds, courseCodes, reason }));
     } else if (actionType === 'OVERDUE') {
+      bulkTrainingActionApi({
+        airmanIds,
+        courseCodes,
+        actionType: 'OVERDUE',
+      }).catch(() => {});
       dispatch(bulkInvalidateCompletion({ airmanIds, courseCodes }));
     }
 

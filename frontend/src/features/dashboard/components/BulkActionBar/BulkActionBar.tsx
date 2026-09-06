@@ -16,6 +16,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import MarkEmailReadOutlinedIcon from '@mui/icons-material/MarkEmailReadOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import { useAppDispatch, useAppSelector } from '@/app/hooks';
 import {
@@ -25,6 +26,9 @@ import {
   selectSelectedAirmanIds,
 } from '../../dashboardSlice';
 import BulkActionModal from './BulkActionModal';
+import EmailNotifyModal from './EmailNotifyModal';
+
+import { bulkDeleteAirmenApi } from '@/api/client';
 
 export default function BulkActionBar() {
   const dispatch = useAppDispatch();
@@ -32,8 +36,10 @@ export default function BulkActionBar() {
   const selectedCount = selectedAirmanIds.length;
   const visible = selectedCount > 0;
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [emailModalOpen, setEmailModalOpen] = useState(false);
 
   const handleConfirmRemove = () => {
+    bulkDeleteAirmenApi(selectedAirmanIds).catch(() => {});
     dispatch(removeSelectedAirmen());
     setConfirmOpen(false);
   };
@@ -74,6 +80,17 @@ export default function BulkActionBar() {
           </Box>
 
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              startIcon={<MarkEmailReadOutlinedIcon />}
+              onClick={() => setEmailModalOpen(true)}
+              sx={{ fontWeight: 600, textTransform: 'none' }}
+            >
+              Notify Airmen
+            </Button>
+
             <Button
               variant="contained"
               color="success"
@@ -166,8 +183,9 @@ export default function BulkActionBar() {
         </DialogActions>
       </Dialog>
 
-      {/* Encapsulated Child Modal */}
+      {/* Encapsulated Child Modals */}
       <BulkActionModal />
+      <EmailNotifyModal open={emailModalOpen} onClose={() => setEmailModalOpen(false)} />
     </>
   );
 }

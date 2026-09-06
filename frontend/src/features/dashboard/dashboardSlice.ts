@@ -283,6 +283,15 @@ export const dashboardSlice = createSlice({
       });
       state.isAddAirmanModalOpen = false;
     },
+    setSquadronRosterFromApi: (
+      state,
+      action: PayloadAction<{ squadronId: number; roster: AirmanMatrixRow[] }>
+    ) => {
+      const { squadronId, roster } = action.payload;
+      // Keep other squadrons intact, replace target squadron rows with fresh DB rows
+      const otherSquadronsRoster = state.roster.filter((r) => r.airman.squadronId !== squadronId);
+      state.roster = [...otherSquadronsRoster, ...roster];
+    },
   },
 });
 
@@ -311,6 +320,7 @@ export const {
   bulkInvalidateCompletion,
   removeSelectedAirmen,
   removeAirmen,
+  setSquadronRosterFromApi,
 } = dashboardSlice.actions;
 
 // =============================================================================

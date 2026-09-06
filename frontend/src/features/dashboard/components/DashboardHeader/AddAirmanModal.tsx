@@ -28,6 +28,8 @@ import {
 import { SQUADRON_MAP } from '../../mockData';
 import { ComplianceStatus } from '@/types/utm';
 
+import { addAirmanApi } from '@/api/client';
+
 const AF_RANKS = [
   'AB', 'Amn', 'A1C', 'SrA', 'SSgt', 'TSgt', 'MSgt', 'SMSgt', 'CMSgt',
   '2nd Lt', '1st Lt', 'Capt', 'Maj', 'Lt Col', 'Col',
@@ -86,6 +88,19 @@ export default function AddAirmanModal() {
       return;
     }
     const finalEmail = email.trim() || `${firstName.trim().toLowerCase()}.${lastName.trim().toLowerCase()}@test.com`;
+
+    // Persist to backend database (with offline resilience)
+    addAirmanApi({
+      rank,
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      edipi: edipi.trim(),
+      email: finalEmail,
+      squadronId: targetSquadronId,
+      initialStatus,
+    }).catch(() => {
+      // Offline fallback
+    });
 
     dispatch(
       addAirman({

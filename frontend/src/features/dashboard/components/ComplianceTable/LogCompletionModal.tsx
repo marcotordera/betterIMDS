@@ -28,6 +28,11 @@ import {
   selectRoster,
 } from '../../dashboardSlice';
 import { COURSES } from '../../mockData';
+import {
+  logCompletionApi,
+  grantExemptionApi,
+  invalidateCompletionApi,
+} from '@/api/client';
 
 export default function LogCompletionModal() {
   const dispatch = useAppDispatch();
@@ -63,17 +68,20 @@ export default function LogCompletionModal() {
   };
 
   const handleSaveCompletion = () => {
+    logCompletionApi(airmanId, courseCode, completedDate).catch(() => {});
     dispatch(logCompletion({ airmanId, courseCode, completedDate }));
     handleClose();
   };
 
   const handleGrantExemption = () => {
     const finalReason = customReason.trim() || 'Approved Exemption / Waiver';
+    grantExemptionApi(airmanId, courseCode, finalReason).catch(() => {});
     dispatch(grantExemption({ airmanId, courseCode, reason: finalReason }));
     handleClose();
   };
 
   const handleInvalidate = () => {
+    invalidateCompletionApi(airmanId, courseCode).catch(() => {});
     dispatch(invalidateCompletion({ airmanId, courseCode }));
     handleClose();
   };
