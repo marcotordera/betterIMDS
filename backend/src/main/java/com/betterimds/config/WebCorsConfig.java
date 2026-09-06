@@ -6,7 +6,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 public class WebCorsConfig implements WebMvcConfigurer {
@@ -16,13 +17,20 @@ public class WebCorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry) {
-        String[] origins = Arrays.stream(allowedOrigins.split(","))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .toArray(String[]::new);
+        List<String> originsList = new ArrayList<>();
+        if (allowedOrigins != null) {
+            for (String origin : allowedOrigins.split(",")) {
+                if (origin != null && !origin.trim().isEmpty()) {
+                    originsList.add(origin.trim());
+                }
+            }
+        }
+        if (originsList.isEmpty()) {
+            originsList.add("http://localhost:5173");
+        }
 
         registry.addMapping("/**")
-                .allowedOriginPatterns(origins)
+                .allowedOriginPatterns(originsList.toArray(new String[0]))
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                 .allowedHeaders("*")
                 .allowCredentials(true)
