@@ -26,25 +26,43 @@ import {
 } from '../authSlice';
 import { setSelectedSquadron } from '@/features/dashboard';
 
+import { loginApi } from '@/api/client';
+
 export default function LoginForm() {
   const dispatch = useAppDispatch();
   const { form, error } = useAppSelector((state) => state.auth);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(clearAuthError());
 
-    const trimmedEmail = form.email.trim().toLowerCase();
-    const foundAdmin = DEMO_ADMINS.find(
-      (a) => a.email.toLowerCase() === trimmedEmail && a.password === form.password
-    );
+    try {
+      const response = await loginApi(form.email.trim(), form.password);
+      dispatch(
+        loginSuccess({
+          adminId: response.adminId,
+          email: response.email,
+          fullName: response.fullName,
+          role: response.role,
+          defaultSquadron: response.defaultSquadron,
+          accessibleSquadrons: response.accessibleSquadrons,
+        })
+      );
+      dispatch(setSelectedSquadron(response.defaultSquadron));
+    } catch {
+      // Fallback for offline / local demo matching
+      const trimmedEmail = form.email.trim().toLowerCase();
+      const foundAdmin = DEMO_ADMINS.find(
+        (a) => a.email.toLowerCase() === trimmedEmail && a.password === form.password
+      );
 
-    if (foundAdmin) {
-      const { password: _, ...adminData } = foundAdmin;
-      dispatch(loginSuccess(adminData));
-      dispatch(setSelectedSquadron(foundAdmin.defaultSquadron));
-    } else {
-      dispatch(loginFailure('Invalid email or password. Use one of the demo credentials below.'));
+      if (foundAdmin) {
+        const { password: _, ...adminData } = foundAdmin;
+        dispatch(loginSuccess(adminData));
+        dispatch(setSelectedSquadron(foundAdmin.defaultSquadron));
+      } else {
+        dispatch(loginFailure('Invalid email or password. Use one of the demo credentials below.'));
+      }
     }
   };
 

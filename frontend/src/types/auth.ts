@@ -6,6 +6,7 @@ export interface AdminUser {
   fullName: string;
   role: UserRole;
   defaultSquadron: string;
+  accessibleSquadrons?: string[];
 }
 
 export interface LoginFormState {
